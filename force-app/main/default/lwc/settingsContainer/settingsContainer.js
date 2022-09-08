@@ -8,7 +8,7 @@ export default class SettingsContainer extends LightningElement {
     @api schedulingPolicyId =[string];
     @api arrivalWindowMethod = [string];
     @api schedulingHorizonUnit = [string];
-    @api sechedulingHorizonValue = [int];
+    @api sechedulingHorizonValue = [string];
     @api enableAssignToMe = [boolean];
     @api enableAssignToEveryone = [boolean];
 

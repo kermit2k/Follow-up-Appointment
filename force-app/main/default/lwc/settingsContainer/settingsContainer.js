@@ -4,23 +4,23 @@ export default class SettingsContainer extends LightningElement {
     title="Hello Settings LWC"
 
     //@api serviceAppointmentId;
-    @api operatingHoursId = [string];
-    @api schedulingPolicyId =[string];
-    @api arrivalWindowMethod = [string];
-    @api schedulingHorizonUnit = [string];
-    @api sechedulingHorizonValue = [string];
-    @api enableAssignToMe = [boolean];
-    @api enableAssignToEveryone = [boolean];
+    @api operatingHoursId = "0OH630000000aTkGAI";
+    @api schedulingPolicyId ="a0Z63000003rPoXEAU";
+    @api arrivalWindowMethod = "Arrival Windows";
+    @api schedulingHorizonUnit = "Days";
+    @api sechedulingHorizonValue = "20";
+    @api enableAssignToMe;
+    @api enableAssignToEveryone;
 
-    _recordId;
+    _serviceAppointmentId;
 
     @api set recordId(recordId) {
-        if (recordId !== this._recordId) {
-            this._recordId = recordId;
+        if (recordId !== this._serviceAppointmentId) {
+            this._serviceAppointmentId = recordId;
         }
     }
 
     get recordId() {
-        return this._recordId;
+        return this._serviceAppointmentId;
     }
 }

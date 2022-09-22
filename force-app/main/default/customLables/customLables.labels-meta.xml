@@ -1,5 +1,227 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- *********************  Utility Contants ************************  -->
+     <!-- ********   MONTHS NAMES ********** -->
+     <labels>
+        <fullName>Appointment_ReBooking_MonthName_January</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>January</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_February</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>February</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_March</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>March</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_April</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>April</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_May</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>May</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_June</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>June</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_July</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>July</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_August</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>August</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_September</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>September</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_October</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>October</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_November</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>November</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_MonthName_December</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Month name</shortDescription>
+        <value>December</value>
+    </labels>
+    <!-- ********   MONTH NAME  END ********** -->
+
+
+
+
+    <!-- ********   WEEKDAY NAMES ********** -->
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayShort_Mon</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Short</shortDescription>
+        <value>MON</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayShort_Tue</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Short</shortDescription>
+        <value>TUE</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayShort_Wed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Short</shortDescription>
+        <value>WED</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayShort_Thu</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Short</shortDescription>
+        <value>THU</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayShort_Fri</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Short</shortDescription>
+        <value>FRI</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayShort_Saturday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Short</shortDescription>
+        <value>SAT</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayShort_Sunday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Short</shortDescription>
+        <value>SUN</value>
+    </labels>
+
+
+
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayLong_Monday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Long</shortDescription>
+        <value>Monday</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayLong_Tuesday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Long</shortDescription>
+        <value>Tuesday</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayLong_Wednesday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Long</shortDescription>
+        <value>Wednesday</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayLong_Thursday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Long</shortDescription>
+        <value>Thursday</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayLong_Friday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Long</shortDescription>
+        <value>Friday</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayLong_Saturday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Long</shortDescription>
+        <value>Saturday</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_WeekDayLong_Sunday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>WeekDay name - Long</shortDescription>
+        <value>Sunday</value>
+    </labels>
+    <!-- ********   WEEKDAY NAMES ENDS ********** -->
+
+    
     <labels>
         <fullName>Reschedule_Appointment_page_title</fullName>
         <language>en_US</language>
@@ -7,5 +229,13 @@
         <categories>AppointmentAssistant</categories>
         <shortDescription>Reschedule Appointment landing page title</shortDescription>
          <value>Reschedule Appoinyment</value>
+    </labels>
+    <labels>
+        <fullName>Reschedule_Appointment_current_appointment_title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Reschedule Appoinyment compact info title</shortDescription>
+         <value>Current Appointment</value>
     </labels>
 </CustomLabels>

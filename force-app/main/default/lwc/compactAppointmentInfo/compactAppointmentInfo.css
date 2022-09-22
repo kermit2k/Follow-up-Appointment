@@ -1,0 +1,17 @@
+.container{
+    background-color: white;
+    padding: 16px;
+}
+.title{
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 8px;
+}
+
+.info-emph{
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+

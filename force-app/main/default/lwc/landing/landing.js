@@ -18,6 +18,22 @@ export default class Landing extends LightningElement {
     @track currentAppointmentData;
     @api appointmentFields;
     @api useDefaultFields;
+    _showModal = 0;
+
+    @api
+    get showModal() {
+        return this._showModal;
+    }
+
+    set showModal(value) {
+       this._showModal = value;
+    }
+
+    constructor() {
+        super();
+        this.template.addEventListener('closemodal', this.closeModal);
+        this.template.addEventListener('openmodal', this.openModal);
+    }
 
     getFieldsFromApex(){
         
@@ -55,5 +71,21 @@ export default class Landing extends LightningElement {
         console.log('createSAObject::: '+ JSON.stringify(appointmentFields));
         return appointmentFields;
     }
+
+    testModal(){
+        console.log("action button clocked!!!");
+    }
+
+    openModal(event){
+        event.preventDefault();
+        this.showModal = 1;
+    }
+
+    closeModal(event){
+        event.preventDefault();
+        this.showModal = 0;
+    };
+
+
 
 }

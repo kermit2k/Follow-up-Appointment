@@ -2,12 +2,13 @@
     <div class="landing-container">
         <div>
             <c-compact-appointment-info
-            service-appointment-object={currentAppointmentData}
-            show-default-fields={useDefaultFields}>
-        </c-compact-appointment-info>
-        </div>
-        <div>Modal</div>
-        <div>Current Sa</div>
+                service-appointment-object={currentAppointmentData}
+                show-default-fields={useDefaultFields}
+                show-modal={showModal}
+                onclosemodal={closeModal}
+                onopenmodal={openModal}>
+            </c-compact-appointment-info>
+        </div>       
         <div>Select Options</div>
         <div>Recommended slots</div>
         <div>All slots</div>

@@ -11,9 +11,15 @@ export default class CompactAppointmentInfo extends LightningElement {
     //Todo: logs
     @api showDefaultFields;
     @api showCustomFields;
+    @api showModal;
 
+
+   
+        
+    
     connectedCallback(){
         this.showCustomFields = false;
+
     }
 
     @api
@@ -44,6 +50,19 @@ export default class CompactAppointmentInfo extends LightningElement {
             this._serviceAppointmentObject = value;
         }
     }
+
+    openModal(event){
+        event.preventDefault();
+
+        console.log("dispatching open modal::: " + this.showModal);
+        this.dispatchEvent(new CustomEvent('openmodal', {
+            composed: true,
+            bubbles: true
+        }));
+
+    }
+
+  
 
     
 

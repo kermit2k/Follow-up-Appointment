@@ -1,4 +1,4 @@
-import customLabels from './labels';
+import customLabels from './constantsLabels';
 
 const MONTHNAME = [ customLabels.Appointment_ReBooking_MonthName_January,
     customLabels.Appointment_ReBooking_MonthName_February,
@@ -22,15 +22,31 @@ const DAYNAME = [ customLabels.Appointment_ReBooking_WeekDayLong_Sunday,
     customLabels.Appointment_ReBooking_WeekDayLong_Saturday ];
 
 
-const formatAppointmentFromHToH = (startDate, durationMinutes) => {
-    let date = new Date(startDate);
-    let formatedStr = DAYNAME[date.getDay()] + ","+"  "
-                    +MONTHNAME[date.getMonth()] + " " 
-                    +date.getDate() + " , "
-                    +date.getHours() + ":" + date.getMinutes();
+const formatAppointmentDateandHourRange = (startDate, endDate) => {
+    //Assumes same day 
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+
+    let formatedStr = DAYNAME[start.getDay()] + ","+"  "
+                    +MONTHNAME[start.getMonth()] + " " 
+                    +start.getDate() + " , "
+                    + getFormattedTime(start) + " - " 
+                    + getFormattedTime(end);
 
     return formatedStr;
 };
 
+const getFormattedTime = (date) => {
+      
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; 
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return hours + ':' + minutes + " " + ampm;
+}
 
-export{ formatAppointmentFromHToH};
+
+export{ formatAppointmentDateandHourRange};

@@ -1,6 +1,6 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
-import getServiceAppointmentByFieldsList from '@salesforce/apex/AppointmentController.getServiceAppointmentByFieldsList';
+import getServiceAppointment from '@salesforce/apex/AppointmentController.getServiceAppointment';
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
 
@@ -15,6 +15,7 @@ export default class Landing extends LightningElement {
     LABELS = customLabels;
     title = this.LABELS.Reschedule_Appointment_page_title;
     @api serviceAppointmentId;
+    previousServiceAppointmentId;
     @track currentAppointmentData;
     @api appointmentFields;
     @api useDefaultFields;
@@ -33,6 +34,26 @@ export default class Landing extends LightningElement {
         super();
         this.template.addEventListener('closemodal', this.closeModal);
         this.template.addEventListener('openmodal', this.openModal);
+
+    }
+
+    connectedCallback(){
+        console.log("connected before assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
+        this._previousServiceAppointmentId = this.serviceAppointmentId;
+        console.log("connected after assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
+
+        this.getInitData();
+    }
+
+    renderedCallback(){
+        console.log("rendered new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
+
+        if(this._previousServiceAppointmentId != this.serviceAppointmentId){
+
+            console.log("getting new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
+
+            this.getInitData();
+        }
     }
 
     getFieldsFromApex(){
@@ -42,13 +63,9 @@ export default class Landing extends LightningElement {
         });
         console.log("getFields:::: " + JSON.stringify(fields));
 
-        getServiceAppointmentByFieldsList({serviceAppointmentId: this.serviceAppointmentId, serviceAppointmnetFields: JSON.stringify(fields)})
-        .then((data)=> {
-            console.log("results from apex::: " + data);
-        })
     }
 
-    @wire(getRecord, { recordId: '$serviceAppointmentId', fields: '$appointmentFields' })
+    /*@wire(getRecord, { recordId: '$serviceAppointmentId', fields: '$appointmentFields' })
     wiredSa({ error, data }) {
         if (data) {
             this.currentAppointmentData = this.createSAObject(data);
@@ -56,9 +73,24 @@ export default class Landing extends LightningElement {
         } else if (error) {
             this.error = error;
         }
-    }
+    }*/
 
     //Add types??
+
+    getInitData(){
+
+        getServiceAppointment({serviceAppointmentId: this.serviceAppointmentId})
+            .then((data)=>{
+                if(data.error){
+                    this.error = data.error;
+                }
+                else{
+                    this.currentAppointmentData = data;
+                    this.error = undefined;
+                }
+            })
+    }
+
     createSAObject(data){
         let appointmentFields = {}
         data.fields && Object.keys(data.fields).forEach((appointmentField)=> {

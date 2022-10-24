@@ -1,0 +1,11 @@
+<template>
+    <template if:false={ready}>
+        <div>loading.....</div>
+    </template>
+    <template if:true={ready}>
+        <c-aa-rebooking-calendar
+            week-view={weekview}  
+        >
+        </c-aa-rebooking-calendar>
+    </template>
+</template>

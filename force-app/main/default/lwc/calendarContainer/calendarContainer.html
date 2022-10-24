@@ -1,0 +1,21 @@
+<template>
+    <div class="container">
+        <div>AssignTo</div>
+        <c-calendar-compact-view
+            ready="true"
+            max-valid-calendar-date={maxValidCalendarDate}
+        ></c-calendar-compact-view>
+    </div>
+    <template if:true={showCalendarFullPage}>
+        <div>Hello modal</div>
+        <c-modal show-modal={showModal}>
+            <div slot="header">Test Month view</div>
+            <div slot="content">
+                <c-aa-rebooking-calendar>
+                </c-aa-rebooking-calendar>
+            </div>
+            
+        </c-modal>
+    </template>
+
+</template>

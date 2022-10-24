@@ -1,0 +1,26 @@
+<template>
+      <div>
+          <template for:each={formattedTimeSlotArray} for:item="timeSlotNewArray">
+            <div key={timeSlotNewArray.title}>test</div>
+              <!--<template if:false={timeSlotNewArray.hideFromView}>
+                  <div class="header" key={timeSlotNewArray} data-id={timeSlotNewArray.title} onscroll={onScroll}>
+                      {timeSlotNewArray.title}
+                  </div>
+              
+                  <template if:false={timeSlotNewArray.timeArray}> 
+                      <p class="noSlotLabel" key={timeSlotNewArray}>
+                          {LABELS.Appointment_ReBooking_no_available_appointments_msg}
+                      </p>
+                  </template>
+              </template>
+
+                  <template for:each={timeSlotNewArray.timeArray} for:item="timeArray">
+                      <button key={timeArray} class="slds-button slds-button_neutral timeslotButton" 
+                          title={timeArray.fullValue} slot="actions" onclick={handleTimeSlotClickEvent}>
+                          {timeArray.label}
+                      </button>
+                  </template>-->
+                  
+            </template>
+      </div>       
+</template>

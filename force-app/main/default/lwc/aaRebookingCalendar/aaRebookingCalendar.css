@@ -1,0 +1,101 @@
+.selectedDay {
+    border-radius: 100%;
+    background-color:rgb(188, 215, 245) !important;
+    color: rgb(0, 112, 210);
+    height: 44px;
+    width: 44px;
+}
+.unselectedDay {
+    color: rgb(43, 40, 38);
+    height: 44px;
+    width: 44px;
+}
+.blockDate {
+    color: rgb(201, 199, 197);
+    height: 44px;
+    width: 44px;
+}
+.currentDay {
+    color: rgb(0, 112, 210);
+    height: 44px;
+    width: 44px;
+}
+.currentDayBlocked {
+    color: rgb(201, 199, 197);
+    height: 44px;
+    width: 44px;
+}
+.btn {
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    border: none;
+    background-color: inherit;
+    padding: 0px;
+    margin: 0px;
+    height: 44px;
+    width: 44px;
+}
+.monthButton{
+    height: 24px;
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.38px;
+}
+tr {
+    text-align: center;
+}
+td {
+    text-align: center;
+    box-sizing: initial;
+    color: rgb(0, 112, 210);
+    height: 44px;
+    font-size: 16px;
+    font-weight: normal;
+    letter-spacing: -0.38px;
+}
+th {
+    text-align: center;
+    box-sizing: initial;
+    color: rgb(112, 110, 107);
+    font-size: 13px;
+    font-weight: normal;
+    letter-spacing: -0.08px;
+    line-height: 18px;
+    width: 44px;
+}
+.table{
+    font-size: medium;
+    vertical-align: middle;
+} 
+*:focus {
+    outline: none;
+}
+.rightButton{ 
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    position: relative;
+    color: rgb(106, 106, 106);
+}
+.leftButton{
+    margin-left: 0px;
+    margin-right: 38px;
+    padding-left: 0px;
+    padding-right: 0px;
+    position: relative;
+    color: rgb(106, 106, 106);
+}
+.slds-popover{
+    z-index: 9000;
+}
+.modal {
+    width: 99%;
+    height: 100%;
+}
+.breakLine {
+    margin: 0;
+    margin-bottom: 16px;
+}

@@ -11,19 +11,17 @@ import Appointment_ReBooking_MonthName_October from '@salesforce/label/c.Appoint
 import Appointment_ReBooking_MonthName_November from '@salesforce/label/c.Appointment_ReBooking_MonthName_November';
 import Appointment_ReBooking_MonthName_December from '@salesforce/label/c.Appointment_ReBooking_MonthName_December';
 
-import Appointment_ReBooking_WeekDayLong_Monday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Monday';
-import Appointment_ReBooking_WeekDayLong_Tuesday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Tuesday';
-import Appointment_ReBooking_WeekDayLong_Wednesday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Wednesday';
-import Appointment_ReBooking_WeekDayLong_Thursday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Thursday';
-import Appointment_ReBooking_WeekDayLong_Friday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Friday';
-import Appointment_ReBooking_WeekDayLong_Saturday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Saturday';
-import Appointment_ReBooking_WeekDayLong_Sunday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Sunday';
-//import Appointment_ReBooking_today_text from '@salesforce/label/c.Appointment_ReBooking_today_text';
+
+import Appointment_ReBooking_WeekDayShort_Mon from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Mon';
+import Appointment_ReBooking_WeekDayShort_Tue from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Tue';
+import Appointment_ReBooking_WeekDayShort_Wed from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Wed';
+import Appointment_ReBooking_WeekDayShort_Thu from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Thu';
+import Appointment_ReBooking_WeekDayShort_Fri from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Fri';
+import Appointment_ReBooking_WeekDayShort_Saturday from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Saturday';
+import Appointment_ReBooking_WeekDayShort_Sunday from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Sunday';
 
 
 const customLabels = {
-
-
     Appointment_ReBooking_MonthName_January,
     Appointment_ReBooking_MonthName_February,
     Appointment_ReBooking_MonthName_March,
@@ -37,16 +35,14 @@ const customLabels = {
     Appointment_ReBooking_MonthName_November,
     Appointment_ReBooking_MonthName_December,
 
-    Appointment_ReBooking_WeekDayLong_Monday,
-    Appointment_ReBooking_WeekDayLong_Tuesday,
-    Appointment_ReBooking_WeekDayLong_Wednesday,
-    Appointment_ReBooking_WeekDayLong_Thursday,
-    Appointment_ReBooking_WeekDayLong_Friday,
-    Appointment_ReBooking_WeekDayLong_Saturday,
-    Appointment_ReBooking_WeekDayLong_Sunday
 
-
-
+    Appointment_ReBooking_WeekDayShort_Mon,
+    Appointment_ReBooking_WeekDayShort_Tue,
+    Appointment_ReBooking_WeekDayShort_Wed,
+    Appointment_ReBooking_WeekDayShort_Thu,
+    Appointment_ReBooking_WeekDayShort_Fri,
+    Appointment_ReBooking_WeekDayShort_Saturday,
+    Appointment_ReBooking_WeekDayShort_Sunday
 
     
 }

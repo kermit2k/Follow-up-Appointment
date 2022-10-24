@@ -133,4 +133,163 @@ public without sharing class AppointmentController {
 
         return  fieldsStr;
     }
+
+    @AuraEnabled()
+    public static Map<String, Object> getSlots(String serviceAppointmentId, Id operatingHoursId, Id schedulingPolicyId, Boolean arrivalWindowFlag) {
+        // CALL to instrumentation api
+        // InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - getSlotsAsPerEarliestStartDate()');
+
+
+        // SAVE POINT TO ROLLBACK LATER
+        Map<String, Object> slotsList = new Map<String, Object>();
+        try {
+            if(serviceAppointmentId != null) {
+                ServiceAppointment sa = [SELECT Id, ServiceTerritoryId
+                                        FROM ServiceAppointment
+                                        WHERE ID =: serviceAppointmentId
+                                        ][0];        
+                Timezone timeZone = UserInfo.getTimeZone();
+                if (sa.ServiceTerritoryId != null) {   
+                    ServiceTerritory st = [SELECT OperatingHoursId  
+                                            FROM ServiceTerritory   
+                                            WHERE ID =: sa.ServiceTerritoryId  
+                                            ][0];   
+                    OperatingHours oh = [SELECT TimeZone    
+                                        FROM OperatingHours 
+                                        WHERE ID =: st.OperatingHoursID 
+                                        ][0];   
+                    timeZone = System.Timezone.getTimeZone(oh.TimeZone);    
+                }
+
+                List<FSL.AppointmentBookingSlot> timeSlots = FSL.AppointmentBookingService.GetSlots(serviceAppointmentId,
+                                    schedulingPolicyId, operatingHoursId, timeZone, arrivalWindowFlag);
+
+
+                slotsList.put('list', timeSlots);
+                List<String> timeSlotRange = new List<String>();
+    
+                for(integer i=0; i<timeSlots.size(); i++) {
+                    System.debug('Time slots are : '+timeSlots[i].Interval.Start+'#'+ timeSlots[i].Interval.Finish);
+                    timeSlotRange.add(timeSlots[i].Interval.Start+'#'+ timeSlots[i].Interval.Finish+'#'+timeSlots[i].Grade);
+                }
+                slotsList.put('timeSlotList', timeSlotRange);
+            }
+            else {
+                slotsList.put('error', 'Invalid SA ID or token expired');
+            }
+            return slotsList;
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+            slotsList.put('error', ''+e.getMessage());
+            return slotsList;
+        }
+    }
+
+    @AuraEnabled()
+    public static Map<String, String> scheduleSA(String serviceAppointmentId, String schedulingPolicyId) {
+        //  CALL to instrumentation api
+        //  InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - updateSASlot()');
+
+        Map<String, String> updateStatusArray = new Map<String, String>();
+
+            try {
+                System.debug('Service appointment is  : '+serviceAppointmentId);
+                FSL.ScheduleResult myResult = new FSL.ScheduleResult();
+
+                myResult = FSL.ScheduleService.schedule(schedulingPolicyId , serviceAppointmentId);
+                System.debug('FSL api result is : '+myResult);
+                updateStatusArray.put('success', 'Appointment Updated');
+
+            } catch (Exception e) {
+                updateStatusArray.put('error', ''+e);
+            }
+        
+        return updateStatusArray;
+    }
+
+    @AuraEnabled()
+    public static Map<String, String> updateSASlot(String serviceAppointmentId, DateTime arrivalWindowStartTime, DateTime arrivalWindowEndTime) {
+         // CALL to instrumentation api
+         // InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - updateSASlot()');
+
+        Map<String, String> updateStatusArray = new Map<String, String>();
+
+            try {
+                ServiceAppointment sa = [SELECT Id
+                                        FROM ServiceAppointment
+                                        WHERE ID =: serviceAppointmentId
+                                        ][0];
+                sa.ArrivalWindowStartTime = arrivalWindowStartTime; 
+                sa.ArrivalWindowEndTime = arrivalWindowEndTime; 
+                update sa;
+
+                updateStatusArray.put('success', 'Appointment Updated');
+
+            } catch (Exception e) {
+                updateStatusArray.put('error', ''+e);
+            }
+        
+        return updateStatusArray;
+    }
+
+    @AuraEnabled()
+    public static Map<String, String> updateServiceAppointmentStatus(String serviceAppointmentId, String statusId) {
+        // CALL to instrumentation api
+        // InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - updateServiceAppointmentStatus()');
+
+        Map<String, String> updateStatusArray = new Map<String, String>();
+
+            try {
+                ServiceAppointment sa = [SELECT Id
+                                        FROM ServiceAppointment
+                                        WHERE ID =: serviceAppointmentId
+                                        ][0];
+                sa.Status = statusId;
+                update sa;
+                updateStatusArray.put('success', 'Appointment Updated');
+            } catch (Exception e) {
+                updateStatusArray.put('error', ''+e.getMessage());
+            }
+        
+        return updateStatusArray;
+    }
+    
+    @AuraEnabled()
+    public static Map<String, Object> updateSA(String serviceAppointmentId, DateTime earliestStartDate, DateTime arrivalStartDate, DateTime arrivalEndDate) {
+        // CALL to instrumentation api
+        // InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - updateSA()');
+
+        Map<String, Object> newSaArray = new Map<String, Object>();
+
+        try {
+            if(serviceAppointmentId != null) {
+                ServiceAppointment sa = [SELECT Id, EarliestStartTime
+                                        FROM ServiceAppointment
+                                        WHERE ID =: serviceAppointmentId
+                                        ][0];        
+                if(sa != null) {
+
+                    sa.EarliestStartTime = earliestStartDate;
+                    sa.ArrivalWindowEndTime = arrivalEndDate;
+                    sa.ArrivalWindowStartTime = arrivalStartDate;
+                    
+                    update sa;
+                    system.debug('Service appointment updated');
+                    newSaArray.put('success', 'service appointment updated' );
+                    
+                }
+                else {
+                    newSaArray.put('error', 'Unable to find service appointment');
+                }
+            } else {
+                newSaArray.put('error', 'No service appointment found');
+            }
+
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+            newSaArray.put('error', ''+e.getMessage());
+            return newSaArray;
+        }
+        return newSaArray;
+    }
 }

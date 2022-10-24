@@ -12,13 +12,14 @@ export default class SettingsContainer extends LightningElement {
     title="Hello Settings LWC"
 
     //@api serviceAppointmentId;
-    @api operatingHoursId = "0OH630000000aTkGAI";
-    @api schedulingPolicyId ="a0Z63000003rPoXEAU";
+    @api operatingHoursId = "0OH7e000000Cj5iGAC";
+    @api schedulingPolicyId ="a0Z7e00000MImdzEAD";
     @api arrivalWindowMethod = "Arrival Windows";
     @api schedulingHorizonUnit = "Days";
     @api sechedulingHorizonValue = "20";
     @api enableAssignToMe;
     @api enableAssignToEveryone;
+    @api showExactArrivalTime =  false;
     useDefaultFields = true;
     currentAppointmentDefaultFieldNames = [
         ID_FIELD,
@@ -32,9 +33,10 @@ export default class SettingsContainer extends LightningElement {
     _serviceAppointmentId;
 
     @api set recordId(recordId) {
-        if (recordId !== this._serviceAppointmentId) {
+        this._serviceAppointmentId = "08p7e000000CxXIAA0"
+        /*if (recordId !== this._serviceAppointmentId) {
             this._serviceAppointmentId = recordId;
-        }
+        }*/
     }
 
     get recordId() {

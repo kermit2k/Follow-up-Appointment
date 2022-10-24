@@ -1,3 +1,4 @@
+import Appointment_ReBooking_no_available_appointments_msg from '@salesforce/label/c.Appointment_ReBooking_no_available_appointments_msg';
 import Appointment_ReBooking_MonthName_January from '@salesforce/label/c.Appointment_ReBooking_MonthName_January';
 import Appointment_ReBooking_MonthName_February from '@salesforce/label/c.Appointment_ReBooking_MonthName_February';
 import Appointment_ReBooking_MonthName_March from '@salesforce/label/c.Appointment_ReBooking_MonthName_March';
@@ -18,11 +19,12 @@ import Appointment_ReBooking_WeekDayLong_Thursday from '@salesforce/label/c.Appo
 import Appointment_ReBooking_WeekDayLong_Friday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Friday';
 import Appointment_ReBooking_WeekDayLong_Saturday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Saturday';
 import Appointment_ReBooking_WeekDayLong_Sunday from '@salesforce/label/c.Appointment_ReBooking_WeekDayLong_Sunday';
-//import Appointment_ReBooking_today_text from '@salesforce/label/c.Appointment_ReBooking_today_text';
+import Appointment_ReBooking_today_text from '@salesforce/label/c.Appointment_ReBooking_today_text';
 
 
 const customLabels = {
-
+    Appointment_ReBooking_no_available_appointments_msg,
+    Appointment_ReBooking_today_text,
 
     Appointment_ReBooking_MonthName_January,
     Appointment_ReBooking_MonthName_February,

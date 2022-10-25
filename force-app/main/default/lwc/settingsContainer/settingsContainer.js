@@ -20,6 +20,7 @@ export default class SettingsContainer extends LightningElement {
     @api enableAssignToMe;
     @api enableAssignToEveryone;
     @api showExactArrivalTime =  false;
+    recommendedScore = 80;
     useDefaultFields = true;
     currentAppointmentDefaultFieldNames = [
         ID_FIELD,

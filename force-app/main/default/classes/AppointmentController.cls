@@ -139,9 +139,9 @@ public without sharing class AppointmentController {
         // CALL to instrumentation api
         // InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - getSlotsAsPerEarliestStartDate()');
 
-
         // SAVE POINT TO ROLLBACK LATER
         Map<String, Object> slotsList = new Map<String, Object>();
+        //FSL.AppointmentBookingService.SortResultsBy sortByGrade = FSL.AppointmentBookingService.SortResultsBy.Grade;
         try {
             if(serviceAppointmentId != null) {
                 ServiceAppointment sa = [SELECT Id, ServiceTerritoryId
@@ -158,11 +158,21 @@ public without sharing class AppointmentController {
                                         FROM OperatingHours 
                                         WHERE ID =: st.OperatingHoursID 
                                         ][0];   
-                    timeZone = System.Timezone.getTimeZone(oh.TimeZone);    
+                    timeZone = System.Timezone.getTimeZone(oh.TimeZone);
+                        
                 }
 
-                List<FSL.AppointmentBookingSlot> timeSlots = FSL.AppointmentBookingService.GetSlots(serviceAppointmentId,
-                                    schedulingPolicyId, operatingHoursId, timeZone, arrivalWindowFlag);
+                List<FSL.AppointmentBookingSlot> timeSlots = FSL.AppointmentBookingService.GetSlots(
+                    serviceAppointmentId,
+                    schedulingPolicyId,
+                    operatingHoursId,
+                    timeZone,
+                    arrivalWindowFlag
+                    );
+
+                                    
+
+
 
 
                 slotsList.put('list', timeSlots);

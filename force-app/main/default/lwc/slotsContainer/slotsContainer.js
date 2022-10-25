@@ -10,6 +10,7 @@ export default class SlotsContainer extends LightningElement {
     @api selectedDate;
     @api showExactArrivalTime;
     @api maxValidCalendarDate;
+    @api pageTitle = "All available";
     timeSlotTitle;
     nonAvailableDateArray = [];
     @api noOfDaysBeforeAfterWeek = 2;
@@ -59,6 +60,7 @@ export default class SlotsContainer extends LightningElement {
         return this.timeSlotDateWise;
     }
     set timeslotobject(value) {
+        //inbal: applay data filters here? or landing?
         if(value) {
             var arr = [];
             arr = value;
@@ -127,6 +129,7 @@ export default class SlotsContainer extends LightningElement {
             console.log('Time slot : '+timeSlotArray[i]);
             var timeSlot = timeSlotArray[i].split('#');
             var timeSlotDate = new Date(timeSlot[1].replace(/-/g, "/")); 
+            array['grade'] = timeSlot[2];
             if(timeSlotDate > currentDate) {
                 if(this.showExactArrivalTime) {
                     // SHOW ONLY ARRIVAL TIME INSTEAD OF WINDOW
@@ -175,6 +178,7 @@ export default class SlotsContainer extends LightningElement {
                     if(date === timeSlotArray[k].dateInMiliSec) {
                         timeDateArray['label'] = timeSlotArray[k].time;
                         timeDateArray['fullValue'] = timeSlotArray[k].dateTime;
+                        timeDateArray['grade'] = timeSlotArray[k].grade;
                         tempArray.push(timeDateArray);
                     }
                 }
@@ -211,6 +215,7 @@ export default class SlotsContainer extends LightningElement {
      * CALL THIS METHOD WHEN TIMESLOT OBJECT IS UPDATED;
      */
     handleTimeSlotUpdateEvent(dateWiseSlotArray) {
+        
         this.formattedTimeSlotArrayTemp = this.formatTimeSlots(dateWiseSlotArray);
         this.formattedTimeSlotArray = this.sortTimeSlotAccordingToWeekSelected(this.formattedTimeSlotArrayTemp);
         this.callCustomEvent('updateNonAvailableDates', this.nonAvailableDateArray);

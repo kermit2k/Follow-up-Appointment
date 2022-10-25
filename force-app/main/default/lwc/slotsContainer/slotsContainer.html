@@ -1,8 +1,9 @@
 <template>
       <div>
+        <div>{pageTitle}</div>
           <template for:each={formattedTimeSlotArray} for:item="timeSlotNewArray">
-            <div key={timeSlotNewArray.title}>test</div>
-              <!--<template if:false={timeSlotNewArray.hideFromView}>
+    
+              <template if:false={timeSlotNewArray.hideFromView}>
                   <div class="header" key={timeSlotNewArray} data-id={timeSlotNewArray.title} onscroll={onScroll}>
                       {timeSlotNewArray.title}
                   </div>
@@ -19,7 +20,7 @@
                           title={timeArray.fullValue} slot="actions" onclick={handleTimeSlotClickEvent}>
                           {timeArray.label}
                       </button>
-                  </template>-->
+                  </template>
                   
             </template>
       </div>       

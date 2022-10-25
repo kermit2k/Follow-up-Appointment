@@ -436,6 +436,7 @@ export default class AaRebookingCalendar extends LightningElement {
     changeNextWeek(selectedDate) {
         this.showWeekView(selectedDate);
         const customEvent = new CustomEvent('weekchangeevent', {
+            bubbles: true, composed: true,
             detail: { date: selectedDate }
         });
         this.dispatchEvent(customEvent);

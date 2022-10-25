@@ -279,10 +279,10 @@ export default class Landing extends LightningElement {
         return d;
     }
 
-    onDateSelected(event) {
+    /*onDateSelected(event) {
         this.selectedDate = event.detail.date;
         console.log('Selected date in main class : ' + this.selectedDate);
-    }
+    }*/
 
     getFirstDayOfWeek(date, index) {
         var start = index >= 0 ? index : 0;
@@ -745,13 +745,13 @@ export default class Landing extends LightningElement {
         var staticElement = this.template.querySelector('[data-id="calendar"]');
         var top  = staticElement.getBoundingClientRect().top
         console.log("The element is : "+top);
-        const returnValue = this.template.querySelector('c-aa-time-slot-page').onPositionUpdated(top);
+        const returnValue = this.template.querySelector('c-slots-container').onPositionUpdated(top);
     }
 
     onWeekChangeEvent(event) {
         this.selectedDate = event.detail.date;
         console.log("On week change called");
-        const returnValue = this.template.querySelector('c-aa-time-slot-page').onWeekUpdated(this.selectedDate);
+        const returnValue = this.template.querySelector('c-slots-container').onWeekUpdated(this.selectedDate);
         this.runApexQueryToChangeEarlistStartDate(this.selectedDate);
     }
 

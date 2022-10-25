@@ -57,7 +57,7 @@ export default class AaRebookingCalendar extends LightningElement {
     }
 
     @api get selecteddate() {
-        return this.isWeekView;
+        return this.currentSelectedDate;
     }
 
     set selecteddate(value) {

@@ -4,7 +4,9 @@
     </template>
     <template if:true={ready}>
         <c-aa-rebooking-calendar
-            week-view={weekview}  
+            week-view={weekview}
+            ondateselection ={onDateSelected}  
+            selecteddate ={selectedDate} 
         >
         </c-aa-rebooking-calendar>
     </template>

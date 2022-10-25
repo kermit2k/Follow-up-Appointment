@@ -33,6 +33,7 @@ export default class Landing extends LightningElement {
     @api operatingHoursId;
     _showModal = 0;
     @track selectedDate;
+    @api recommendedScore;
     @api get maxValidCalendarDate(){
         return this._maxValidCalendarDate;
     };

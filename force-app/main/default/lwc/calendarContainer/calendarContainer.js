@@ -4,6 +4,7 @@ export default class CalendarContainer extends LightningElement {
     showCalendarFullPage;
     showModal = 1;
     @track selectedDate;
+    @track nonavailabledates;
     @api get maxValidCalendarDate(){
         return this._maxValidCalendarDate;
     }
@@ -28,4 +29,8 @@ export default class CalendarContainer extends LightningElement {
         console.log("maxValidCalendarDate::: rendered" + this.maxValidCalendarDate);
     }
 
+    onDateSelected(event) {
+        this.selectedDate = event.detail.date;
+        console.log('Selected date in calendar container : ' + this.selectedDate);
+    }
 }

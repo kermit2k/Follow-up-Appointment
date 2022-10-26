@@ -221,6 +221,23 @@ export default class Landing extends LightningElement {
         }
     }
 
+    showCancelScreen(value) {
+        this.show_cancelScreen = value;
+        this.show_RescheduleAppointmentScreen = !value;
+        this.show_ConfirmAppointmentScreen = !value;
+    }
+
+    showConfirmScreen(value) {
+        this.show_cancelScreen = !value;
+        this.show_RescheduleAppointmentScreen = !value;
+        this.show_ConfirmAppointmentScreen = value;
+    }
+    showRescheduleScreen(value) {
+        this.show_cancelScreen = !value;
+        this.show_RescheduleAppointmentScreen = value;
+        this.show_ConfirmAppointmentScreen = !value;
+    }
+
     calculateMaxValidHorizonDate() {
         if(this.sechedulingHorizonValue && this.selectedHorizonUnit) {
             var currentDate = new Date();
@@ -569,7 +586,40 @@ export default class Landing extends LightningElement {
         }
         
     }
+    
+    isValidDate(d) {
+        return d instanceof Date && !isNaN(d);
+    }
 
+    
+    executeRescheduleAppointmentQuery() {
+        this.showSpinnerInChildClass = true;
+        updateAppointmentStatus({
+            serviceAppointmentId: this.serviceAppointmentId, statusId: this.rescheduleStatusId
+        }).then((data) => {
+            if (data.success) {
+                const toastEvent = new ShowToastEvent({
+                    title: this.LABELS.Appointment_ReBooking_toastMessage_appointment_reschedule,
+                    variant: "success"
+                });
+                this.dispatchEvent(toastEvent);
+                this.isAppointmentConfirmed = true;
+            } else if(data.urlExpired) {
+                console.log('invalidURL #9:');
+                this.show_InvalidURLpage();  
+            } else {
+                if(data.error) {
+                    const toastEventError = new ShowToastEvent({
+                        title: this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message,
+                        variant: "warning"
+                    });
+                    this.dispatchEvent(toastEventError);
+                    console.log(this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message +"  "+ data.error);
+                }
+            }
+            this.showSpinnerInChildClass = false;
+        })
+    }
     /************************************************************************* */
     //from reschdule main
 
@@ -814,7 +864,7 @@ export default class Landing extends LightningElement {
         return hours + ':' + minutes + " "+ampm;
     }
 
-    handleConfirm() {
+    /*handleConfirm() {
         // allow scrolling
         document.body.style.overflow = 'auto';
         const customEvent = new CustomEvent('serviceappointmentupdate', {
@@ -825,7 +875,7 @@ export default class Landing extends LightningElement {
             }
         });
         this.dispatchEvent(customEvent);
-    }
+    }*/
 
     runApexQueryToChangeEarlistStartDate(selectedDate) {
         this.showDataSpinner = true;

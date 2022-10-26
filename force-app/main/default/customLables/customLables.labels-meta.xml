@@ -238,4 +238,20 @@
         <shortDescription>Reschedule Appoinyment compact info title</shortDescription>
          <value>Current Appointment</value>
     </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_new_appointment_msg</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>New Appointment - title</shortDescription>
+        <value>Reschedule Appointment?</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_accept_new_appointment_button</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Accept new Appointment - button text</shortDescription>
+        <value>Reschedule</value>
+    </labels>
 </CustomLabels>

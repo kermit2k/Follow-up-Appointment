@@ -54,6 +54,9 @@ p{
     transform: translate(-50%,0%);
     height: 50px;
     font-size: 16px;
+    border-radius: 12px;
+    background-color: #0D7FA8;
+    font-weight: 600;
 }
 .calendarView {
     position: -webkit-sticky;
@@ -63,13 +66,13 @@ p{
     z-index: 100;
 }
 .acceptNewAptTitle{
-    margin-top: 2px;
+    margin-top: 13.5px;
     margin-bottom: 5px;
-    font-size: 14px;
-    font-weight: normal;
+    font-weight: 500;
+    font-size: 18px;
 }
 .acceptNewAptClose{
-    color: black;
+    --lwc-colorTextIconDefault: #0D7FA8;
     margin-top: 2px;
 }
 .modal {

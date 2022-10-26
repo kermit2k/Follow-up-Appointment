@@ -58,6 +58,8 @@ export default class Landing extends LightningElement {
     OriginalArrivalStartDate = null;
     OriginalArrivalEndDate = null;
     dateArrayForQuery = [];
+    //@api serviceAppointmentObject;
+    //@api serviceResourceObject;
     @api timeSlotDateWise;
     timeSlotWiseTemp=[];
     
@@ -84,7 +86,7 @@ export default class Landing extends LightningElement {
         console.log("connected before assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
         this._previousServiceAppointmentId = this.serviceAppointmentId;
         console.log("connected after assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
-
+        this.dataLoaded = false;
         this.getInitData();
     }
 
@@ -121,7 +123,7 @@ export default class Landing extends LightningElement {
     //Add types??
 
     getInitData(){
-
+        this.dataLoaded = false;
         getServiceAppointment({serviceAppointmentId: '08p7e000000CxXIAA0'})
             .then((data)=>{
                 console.log('init data ::: ' + JSON.stringify(data));
@@ -151,9 +153,9 @@ export default class Landing extends LightningElement {
                     } else {
                         this.minValidCalendarDate = this.getDateWithoutTime(new Date());
                     }
-                    this.selectedDate = new Date(data.SchedStartTime);
-                    firstDateOfWeek = this.getFirstDayOfWeek(this.selectedDate,0);
-                    this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
+                    //this.selectedDate = new Date();
+                    //firstDateOfWeek = this.getFirstDayOfWeek(this.selectedDate,0);
+                    //this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
                     this.dataLoaded = true;
                     }
             })
@@ -204,26 +206,7 @@ export default class Landing extends LightningElement {
         console.log("customEvent"); 
     }
 
-    /********************************************************************************* */
-    //props for calendar and slots: from main
-
-   // showexactarrivaltime = from setting page pros 
-    //serviceappointmentobject = service appointment data
-    //oneventname = {onButtonClick} ???
-    //shownoofdaysbeforeafterweek = set to 2 in demo add to props??? to do add to props
-    //serviceresourceobj = where is that taken from???
-    //timeslotobject = {timeSlotDateWise}????
-    //ondateselection = {onDateSelected}
-    //ongetslotexecuted = {handleGetSlotQueryForSelectedDate}
-    //selecteddate = {selectedDate} to do add to props
-    //maxvaliddate = {maxValidCalendarDate} handled
-    //schedulepolicy = {schedulingPolicyId} settings
-    //onserviceappointmentupdate = {onServiceAppointmentUpdate}
-    //showdataspinner = {showSpinnerInChildClass}  to do add to props
-
-    //pass as props 
-    //@track selectedDate;
-    //@api showSpinnerInChildClass = false;
+   
     checkServiceAppointmentStatus(currentSAStatus) {
         console.log("checkServiceAppointmentStatus => Current:"+currentSAStatus+" ; confirmed:"+this.confirmStatusId+" ; rescheduled:"+this.rescheduleStatusId +"  ;  canceled : "+this.cancelStatusId);
         if(currentSAStatus === this.cancelStatusId) {
@@ -279,10 +262,10 @@ export default class Landing extends LightningElement {
         return d;
     }
 
-    /*onDateSelected(event) {
+    onDateSelected(event) {
         this.selectedDate = event.detail.date;
         console.log('Selected date in main class : ' + this.selectedDate);
-    }*/
+    }
 
     getFirstDayOfWeek(date, index) {
         var start = index >= 0 ? index : 0;
@@ -356,7 +339,10 @@ export default class Landing extends LightningElement {
 
     handleGetSlotQueryForSelectedDate(event) {
         var firstDateOfWeek = this.getFirstDayOfWeek(event.detail.selectedDate);
-        this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
+        if(this.dataLoaded){
+            this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
+        }
+        
     }
 
     handleGetSlotQueryForSelectedDateRange(selectedDate) {
@@ -739,14 +725,14 @@ export default class Landing extends LightningElement {
         this.WorkTypeName = value;
     }
 
-    onDateSelected(event) {
+    /*onDateSelected(event) {
         this.selectedDate = event.detail.date;
         console.log('Selected date in main class : '+this.selectedDate);
         var staticElement = this.template.querySelector('[data-id="calendar"]');
         var top  = staticElement.getBoundingClientRect().top
         console.log("The element is : "+top);
         const returnValue = this.template.querySelector('c-slots-container').onPositionUpdated(top);
-    }
+    }*/
 
     onWeekChangeEvent(event) {
         this.selectedDate = event.detail.date;
@@ -872,5 +858,45 @@ export default class Landing extends LightningElement {
         this.show_confirmBtnLayout = false;
         // allow scrolling
         document.body.style.overflow = 'auto';
+    }
+
+    onButtonClick(event) {
+        this.buttonClickName = event.detail.buttonName;
+        switch (this.buttonClickName) {
+            case 'rescheduleEvent': {
+                this.showRescheduleScreen(true);
+                break;
+            }
+            case 'confirmEvent': {
+                this.executeConfirmAppointmentQuery();
+                break;
+            }
+            case 'showConfirmScreen': {
+                this.dateArrayForQuery = [];
+                this.showConfirmScreen(true);
+                break;
+            }
+            case 'cancelAppointmentEvent' : {
+                this.executeCancelAppointmentQuery();
+                break;
+            }
+            case 'rescheduleSAsuccess' : {
+                this.executeRescheduleAppointmentQuery();   
+                console.log("Appointment reschedule sucessfully");
+                window.location.reload();
+                break;
+            }
+            case 'showPageExpired' : {
+                this.show_InvalidURLpage();
+                break;
+            }
+            case 'onMonthViewSelected' : {
+                this.dateArrayForQuery = [];
+                break;
+            }
+            default: {
+
+            }
+        }
     }
 }

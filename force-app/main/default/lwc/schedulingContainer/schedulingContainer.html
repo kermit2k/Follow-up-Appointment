@@ -1,0 +1,21 @@
+<template>
+    <div class="calendarView" data-id="calendar">
+        <c-aa-rebooking-calendar class="calendarInfo"
+            ondateselection = {onDateSelected}
+            onweekchangeevent = {onWeekChangeEvent}
+            selecteddate = {selectedDate} 
+            maxvaliddate = {maxValidCalendarDate}
+            nonavailabledates = {nonAvailableDateArray} >
+        </c-aa-rebooking-calendar>
+    </div>
+
+    <c-slots-container 
+        showexactarrivaltime = {showExactArrivalTime} 
+        shownoofdaysbeforeafterweek = {noOfDaysBeforeAfterWeek}
+        selecteddate = {selectedDate}
+        maxvaliddate = {maxValidCalendarDate}
+        onslotselection = {onSlotSelection}
+        oncustomeventcalled = {onCustomEventCalled}
+        timeslotobject = {timeSlotObject}>
+    </c-slots-container >
+</template>

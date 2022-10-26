@@ -10,28 +10,23 @@
             </c-compact-appointment-info>
         </div>       
         <div class="landing-section">
-            <c-calendar-container
-                oncustomeventcalled = {onCustomEventCalled}
-                max-valid-calendar-date={maxValidCalendarDate}
-                selecteddate ={selectedDate}
-                ondateselection ={onDateSelected}
-                nonavailabledates ={nonAvailableDateArray}
-                onweekchangeevent ={onWeekChangeEvent}
-            >
-            </c-calendar-container>
-        </div>
-        <div class="landing-section">Recommended slots</div>
-        <div class="landing-section">
-            <c-slots-container           
+            <c-scheduling-container
                 showexactarrivaltime = {showExactArrivalTime} 
+                serviceappointmentobject = {currentAppointmentData}
+                oneventname = {onButtonClick}
                 shownoofdaysbeforeafterweek = {noOfDaysBeforeAfterWeek}
+                serviceresourceobj = {serviceResourceObject}
+                timeslotobject = {timeSlotDateWise}
+                ondateselection = {onDateSelected}
+                ongetslotexecuted = {handleGetSlotQueryForSelectedDate}
                 selecteddate = {selectedDate}
                 maxvaliddate = {maxValidCalendarDate}
-                onslotselection = {onSlotSelection}
-                oncustomeventcalled = {onCustomEventCalled}
-                timeslotobject = {timeSlotDateWise}
-            >
-            </c-slots-container>
+                schedulepolicy = {schedulingPolicyId}
+                onserviceappointmentupdate = {onServiceAppointmentUpdate}
+                showdataspinner = {showSpinnerInChildClass} 
+                page-title = ""
+                worktype-displayname="">
+            </c-scheduling-container>
         </div>
     </div>   
 </template>

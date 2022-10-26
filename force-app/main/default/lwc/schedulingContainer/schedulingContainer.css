@@ -1,0 +1,104 @@
+.headline{
+    color: rgb(0, 0, 0);
+    font-size: 28px;
+    letter-spacing: 0.36px;
+    margin-bottom: 24px;
+    font-family: var(--lwc-fontFamily);
+}
+.divHeadline{
+    color: rgb(106, 106, 106);
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    font-family: var(--lwc-fontFamily);
+   
+}
+.headlineDate{
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.26px;
+}
+.divInfo{
+    margin-left: 0px;
+    margin-bottom: 16px;
+}
+h2{
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+}
+
+p{
+    color: rgb(106, 106, 106);
+    font-size: 14px;
+    letter-spacing: 0.18px;
+}
+.backButton{
+    margin-bottom: 7px;
+    margin-left: 0px;
+    font-size: 16px;
+}
+.confirmBtnLayout {
+    position: fixed;
+    left: 1%;
+    bottom: 0%;
+    width: 100%;
+    background-color: rgb(250, 246, 246);
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 10px;
+}
+.confirmBtn {
+    width: 100%;
+    left: 50%;
+    -ms-transform: translate(-50%,0%);
+    transform: translate(-50%,0%);
+    height: 50px;
+    font-size: 16px;
+}
+.calendarView {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 100;
+}
+.acceptNewAptTitle{
+    margin-top: 2px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: normal;
+}
+.acceptNewAptClose{
+    color: black;
+    margin-top: 2px;
+}
+.modal {
+    position: fixed;
+    top: auto;
+    bottom: 0px;
+    left: 0px;
+}
+.WorkTypeName { 
+    height: 19px;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    font-weight: normal;
+    letter-spacing: 0.21px;
+}
+.spinnerHolder{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    text-align: center;
+}
+.slds-spinner {
+    position: fixed;
+}
+.slds-spinner_container {
+    position: fixed;
+}
+
+svg[class*="slds-button__icon_left"]{
+    padding-bottom: 2px !important;
+}

@@ -9,6 +9,7 @@ import Appointment_ReBooking_new_appointment_msg from '@salesforce/label/c.Appoi
 import Appointment_ReBooking_same_appointment_selected_warning from '@salesforce/label/c.Appointment_ReBooking_same_appointment_selected_warning';
 import AppointmentAssistance_confirmation_service_requested from '@salesforce/label/c.AppointmentAssistance_confirmation_service_requested';
 import Appointment_ReBooking_selected_appointment_msg from '@salesforce/label/c.Appointment_ReBooking_selected_appointment_msg';
+import Appointment_ReBooking_toastMessage_appointment_reschedule from '@salesforce/label/c.Appointment_ReBooking_toastMessage_appointment_reschedule';
 
 const customLabels = {
     Appointment_ReBooking_select_new_date_to_reschedule,
@@ -21,7 +22,8 @@ const customLabels = {
     Appointment_ReBooking_same_appointment_selected_warning,
     AppointmentAssistance_confirmation_service_requested,
     Appointment_ReBooking_selected_appointment_msg,
-    Reschedule_Appointment_page_title
+    Reschedule_Appointment_page_title,
+    Appointment_ReBooking_toastMessage_appointment_reschedule
 }
 
 export default customLabels;

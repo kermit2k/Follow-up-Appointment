@@ -302,4 +302,110 @@ public without sharing class AppointmentController {
         }
         return newSaArray;
     }
+
+    @AuraEnabled
+    public static void deleteExistingRequiredResources(String workOrderId){
+        try {
+            List<ResourcePreference> requiredResourcePreferenceList = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE RelatedRecordId =: workOrderId  AND PreferenceType =: 'Required'];
+            if(!requiredResourcePreferenceList.isEmpty()){
+                delete requiredResourcePreferenceList;
+                System.debug('deleted all existing required resources for work order:::' + workOrderId); 
+            }
+            
+
+        } catch (Exception e) {
+            throw new Exception('Error in deleteExistingRequiredResources:::' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static void deleteExistingResourcePreferencesForResource(String workOrderId, String serviceResourceId){
+        try {
+            List<ResourcePreference> resourcePreferenceList = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE RelatedRecordId =: workOrderId  AND ServiceResourceId =: serviceResourceId];
+            if(!resourcePreferenceList.isEmpty()){
+                delete resourcePreferenceList;
+                System.debug('deleted existing resource preferences for service resource:::' + serviceResourceId); 
+            }
+            
+
+        } catch (Exception e) {
+            throw new Exception('Error in deleteExistingRequiredResources:::' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static void addNewRequiredResource(String workOrderId, String serviceResourceId){
+        try {
+            ResourcePreference techReq = new ResourcePreference(
+                        PreferenceType= 'Required',
+                        RelatedRecordId = workOrderId,
+                        ServiceResourceId = serviceResourceId
+                        );
+            insert techReq;
+                    
+            System.debug('Added new required resource::: ' + serviceResourceId + 'to workorder ' + workOrderId);
+
+        } catch (Exception e) {
+            throw new Exception('Error in  addNewRequiredResource resource ' + serviceResourceId + ' : ' + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static Map<String, String> assignCurrentUserAsRequiredResource(String userId, String serviceAppointmentId){
+        try {
+            
+            Map<String, String> resultArray = new Map<String, String>();
+            String serviceResourceId = [SELECT Id from ServiceResource WHERE RelatedRecordId =: userId][0]?.Id;
+            String workOrderId = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
+            if(workOrderId != null){
+
+                deleteExistingRequiredResources(workOrderId);
+                deleteExistingResourcePreferencesForResource(workOrderId, serviceResourceId);
+                addNewRequiredResource(workOrderId, serviceResourceId);
+                
+                List<ResourcePreference> resourcePreferenceList = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE RelatedRecordId =: workOrderId AND PreferenceType =: 'Required'];
+
+                if(resourcePreferenceList != null && resourcePreferenceList.size() == 1){
+                    System.debug('Assigned ' + serviceResourceId + 'as required resource in ::: ' + workOrderId);
+                    resultArray.put('success', serviceResourceId);
+                    
+                }
+                else{
+                    System.debug('Could not assign ' + serviceResourceId + 'as required resource in::: ' + workOrderId);
+                    resultArray.put('error', serviceResourceId);
+                }
+                                                
+            }else{
+                resultArray.put('error', serviceResourceId);
+            }
+
+        } catch (Exception e) {
+            throw new Exception('Error in assignCurrentUserAsRequiredResource:::' + e.getMessage());
+            
+        }
+
+        return resultArray;
+    }
+
+    @AuraEnabled
+    public static Boolean isUserExcludedResource(String userId){
+        try {
+        
+            String serviceResourceId = [SELECT Id from ServiceResource WHERE RelatedRecordId =: userId][0]?.Id;
+            String workOrderId = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
+
+           List<ResourcePreference> resourcePreference = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE ServiceResourceId =: serviceResourceId AND RelatedRecordId =: workOrderId];
+            if(!resourcePreference.isEmpty()){
+                resourcePreference tech = resourcePreference[0];
+                if((String)tech.get('PreferenceType') != null && (String)tech.get('PreferenceType') == 'Excluded'){
+                    return true;
+                }
+                
+            }
+        } catch (Exception e) {
+            throw new Exception('Error in isUserExcludedResource:::' + e.getMessage());
+        }
+
+        return false;
+    }
 }

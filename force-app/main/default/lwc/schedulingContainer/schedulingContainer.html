@@ -25,7 +25,7 @@
             <div class="" style="width:100%">
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                     
-                    <lightning-layout horizontal-align="right">
+                    <lightning-layout horizontal-align="right" class="modal-title-container">
                         <lightning-layout-item alignment-bump="right" >
                             <div class="acceptNewAptTitle">{LABELS.Appointment_ReBooking_new_appointment_msg}</div> 
                         </lightning-layout-item>
@@ -43,12 +43,14 @@
                         <div class="headlineDate">{newAppointmentTime}</div>
                     </div>
                     <!--TODO - get the assigned to-->
-                    <div>Assigned to You (Sheila Christian)</div>
-        
-                    <button title={LABELS.Appointment_ReBooking_accept_new_appointment_button} 
+                    <div class="modal-assign-to">Assigned to You (Sheila Christian)</div>
+                    <div class="modal-footer">
+                        <button title={LABELS.Appointment_ReBooking_accept_new_appointment_button} 
                             onclick={handleConfirm} class="slds-button slds-button_brand confirmBtn">
-                    {LABELS.Appointment_ReBooking_accept_new_appointment_button}
-                    </button>
+                            {LABELS.Appointment_ReBooking_accept_new_appointment_button}
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </section>

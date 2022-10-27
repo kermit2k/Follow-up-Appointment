@@ -9,7 +9,7 @@ import updateSASlot from '@salesforce/apex/AppointmentController.updateSASlot';
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
-import {calculateMaxValidHorizonDate} from 'c/utils';
+import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c/utils';
 
 //SA Field names
 //WorkTypeId.	Name
@@ -62,6 +62,7 @@ export default class Landing extends LightningElement {
     //@api serviceResourceObject;
     @api timeSlotDateWise;
     timeSlotWiseTemp=[];
+    selectedSlotStringForToast = "";
     
 
     ARRIVAL_TIME_TEXT = "Exact Appointment Times";
@@ -511,6 +512,7 @@ export default class Landing extends LightningElement {
     onServiceAppointmentUpdate(event) {
         let selectedSlotStart = event.detail.selectedSlotStart;
         let selectedSlotEnd = event.detail.selectedSlotEnd;
+        this.selectedSlotStringForToast = formatAppointmentDateandHourRange(selectedSlotStart, selectedSlotEnd);
         let ArrivalWindowStartTime = event.detail.ArrivalWindowStartTime
         if(this.isValidDate(selectedSlotStart) && this.isValidDate(selectedSlotEnd)) {
             if(!(ArrivalWindowStartTime) || ArrivalWindowStartTime === "null") {
@@ -548,12 +550,13 @@ export default class Landing extends LightningElement {
                                 //this.handleButtonClickEvent('rescheduleSAsuccess');
                                 this.executeRescheduleAppointmentQuery();   
                                 console.log("Appointment reschedule sucessfully");
-                                window.location.reload();
+                                //window.location.reload();
                             }
 
                         }).catch(error => {
                             this.revertSA();
                             this.showSpinnerInChildClass = false;
+                            //TODO: add the labels
                             const toastEventError = new ShowToastEvent({
                                 title: this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message,
                                 variant: "warning"
@@ -600,6 +603,7 @@ export default class Landing extends LightningElement {
             if (data.success) {
                 const toastEvent = new ShowToastEvent({
                     title: this.LABELS.Appointment_ReBooking_toastMessage_appointment_reschedule,
+                    message: this.selectedSlotStringForToast,
                     variant: "success"
                 });
                 this.dispatchEvent(toastEvent);

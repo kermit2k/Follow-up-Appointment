@@ -254,4 +254,12 @@
         <shortDescription>Accept new Appointment - button text</shortDescription>
         <value>Reschedule</value>
     </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_toastMessage_appointment_reschedule</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Toast message when appointment gets rescheduled</shortDescription>
+        <value>Appointment was rescheduled.</value>
+    </labels>
 </CustomLabels>

@@ -39,11 +39,13 @@
                     </lightning-layout>
     
                     <div class="divInfo">
+                        <div class="head-line-work-type-name">{worktypename}</div>
                         <div class="headlineDate">{newAppointmentDate}</div>
                         <div class="headlineDate">{newAppointmentTime}</div>
+                        <!--TODO - get the assigned to-->
+                        <div class="modal-assign-to">Assigned to You (Sheila Christian)</div>
                     </div>
-                    <!--TODO - get the assigned to-->
-                    <div class="modal-assign-to">Assigned to You (Sheila Christian)</div>
+
                     <div class="modal-footer">
                         <button title={LABELS.Appointment_ReBooking_accept_new_appointment_button} 
                             onclick={handleConfirm} class="slds-button slds-button_brand confirmBtn">

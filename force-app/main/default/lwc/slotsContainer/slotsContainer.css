@@ -7,16 +7,28 @@
     margin-bottom: 4px;
 }
 .timeslotButton{
-    margin: 4px;
-    margin-left: 0;
-    margin-bottom: 0;
-    padding-left: 2px;
-    padding-right: 2px;
-    font-size: 14px;
-    font-weight: bold;
+    width: 100%;
+    left: 50%;
+    -ms-transform: translate(-50%,0%);
+    transform: translate(-50%,0%);
+    height: 50px;
+    font-size: 16px;
+    border-radius: 12px;
+    border-color: #0D7FA8;
+    font-weight: 600;
+    color: #0D7FA8;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
     text-align: center;
-    width: 48%;
-    height: 46px;
+}
+.time-slot-btn-wrapper{
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+    gap: 16px;
 }
 .noSlotLabel{
     height: 18px;
@@ -30,4 +42,8 @@
     font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.38px;
+}
+.slots-container{
+    background-color: white;
+    padding: 0 16px 0 16px;
 }

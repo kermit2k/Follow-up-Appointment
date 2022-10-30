@@ -3,6 +3,7 @@ import { getRecord } from 'lightning/uiRecordApi';
 import getServiceAppointment from '@salesforce/apex/AppointmentController.getServiceAppointment';
 import updateAppointmentStatus from '@salesforce/apex/AppointmentController.updateServiceAppointmentStatus';
 import getSlots from '@salesforce/apex/AppointmentController.getSlots';
+import getSlotsByAssignmentMethod from '@salesforce/apex/AppointmentController.getSlotsByAssignmentMethod';
 import updateSA from '@salesforce/apex/AppointmentController.updateSA';
 import scheduleSA from '@salesforce/apex/AppointmentController.scheduleSA';
 import updateSASlot from '@salesforce/apex/AppointmentController.updateSASlot';
@@ -16,6 +17,10 @@ import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c
 //dates SchedStartTime, SchedEndTime, 	
 //	AppointmentNumber
 
+const assignmentMethod = {
+    ASSIGN_TO_ME: "assignToMe",
+    ASSIGN_TO_ANY_AVIALABLE: "assignToAnyAvailable"
+}
 
 
 export default class Landing extends LightningElement {
@@ -34,6 +39,7 @@ export default class Landing extends LightningElement {
     _showModal = 0;
     @track selectedDate;
     @api recommendedScore;
+    @api userId;
     @api get maxValidCalendarDate(){
         return this._maxValidCalendarDate;
     };
@@ -50,6 +56,18 @@ export default class Landing extends LightningElement {
     set showModal(value) {
        this._showModal = value;
     }
+
+    @api
+    get currentAssignmentMethod(){
+        return this._currentAssignmentMethod;
+    }
+
+    set currentAssignmentMethod(value){
+        this._currentAssignmentMethod = value;
+    }
+
+    @api enableAssignToMe;
+    @api enableAssignToEveryAvailable;
 
     //proprs from rebooking main
     serviceTerritoryTimeZone;
@@ -87,6 +105,7 @@ export default class Landing extends LightningElement {
         console.log("connected before assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
         this._previousServiceAppointmentId = this.serviceAppointmentId;
         console.log("connected after assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
+        this.calcAssignmentMethod();
         this.dataLoaded = false;
         this.getInitData();
     }
@@ -123,6 +142,21 @@ export default class Landing extends LightningElement {
 
     //Add types??
 
+    calcAssignmentMethod(){
+        if(this.enableAssignToMe && this.enableAssignToEveryAvailable){
+            this._currentAssignmentMethod = assignmentMethod.ASSIGN_TO_ME;
+            this.isCleanupRequired = true;
+        }
+        else if(!this.enableAssignToMe){
+            this._currentAssignmentMethod = assignmentMethod.ASSIGN_TO_ANY_AVIALABLE;
+            this.isCleanupRequired = false;
+        }
+        else{
+            this._currentAssignmentMethod = assignmentMethod.ASSIGN_TO_ME;
+            this.isCleanupRequired = false;
+        }
+           
+    }
     getInitData(){
         this.dataLoaded = false;
         getServiceAppointment({serviceAppointmentId: '08p7e000000CxXIAA0'})
@@ -402,10 +436,13 @@ export default class Landing extends LightningElement {
                     
                         //console.log("Run appointment query for  date "+loopdate);
 
-                        getSlots({serviceAppointmentId: this.serviceAppointmentId,
+                        getSlotsByAssignmentMethod({serviceAppointmentId: this.serviceAppointmentId,
                             operatingHoursId: this.operatingHoursId,
                             schedulingPolicyId: this.schedulingPolicyId,
-                            arrivalWindowFlag: this.showExactArrivalTime })
+                            arrivalWindowFlag: this.showExactArrivalTime, 
+                            userId: this.userId, 
+                            currentAssignmentMethod: this.currentAssignmentMethod,
+                            cleanupRequired: this.isCleanupRequired })
                         .then((data) => {
 
                             this.revertSA();

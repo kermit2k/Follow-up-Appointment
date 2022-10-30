@@ -1,4 +1,5 @@
 public without sharing class AppointmentController {
+    
     public AppointmentController() {
 
     }
@@ -135,7 +136,12 @@ public without sharing class AppointmentController {
     }
 
     @AuraEnabled()
-    public static Map<String, Object> getSlots(String serviceAppointmentId, Id operatingHoursId, Id schedulingPolicyId, Boolean arrivalWindowFlag) {
+    public static Map<String, Object> getSlots(
+        String serviceAppointmentId,
+        Id operatingHoursId,
+        Id schedulingPolicyId,
+        Boolean arrivalWindowFlag
+        ) {
         // CALL to instrumentation api
         // InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - getSlotsAsPerEarliestStartDate()');
 
@@ -194,6 +200,38 @@ public without sharing class AppointmentController {
             return slotsList;
         }
     }
+
+    @AuraEnabled
+    public static Map<String, Object> getSlotsByAssignmentMethod(
+        String serviceAppointmentId,
+        Id operatingHoursId,
+        Id schedulingPolicyId,
+        Boolean arrivalWindowFlag,
+        Id userId,
+        String currentAssignmentMethod,
+        Boolean cleanupRequired
+    ){
+        try {
+
+            if(currentAssignmentMethod == 'assignToMe'){
+                assignCurrentUserAsRequiredResource(userId, serviceAppointmentId);
+            }
+            else if(currentAssignmentMethod == 'assignToAnyAvailable' && cleanupRequired == true){
+                //Cleanup previous required resource prefernces modifications created to enable assign to me
+                String workorderId = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
+                deleteExistingRequiredResources(workorderId);
+            }
+            else{
+                System.Debug('Error in getSlotsByAssignmentMethod::: Unfamiliar assignment method'  );
+            }
+
+             return getSlots(serviceAppointmentId, operatingHoursId, schedulingPolicyId, arrivalWindowFlag);
+
+        } catch (Exception e) {
+            throw new AuraHandledException('Error in getSlotsByAssignmentMethod:::' + e.getMessage());
+        }
+    }
+
 
     @AuraEnabled()
     public static Map<String, String> scheduleSA(String serviceAppointmentId, String schedulingPolicyId) {
@@ -314,7 +352,7 @@ public without sharing class AppointmentController {
             
 
         } catch (Exception e) {
-            throw new Exception('Error in deleteExistingRequiredResources:::' + e.getMessage());
+            throw new AuraHandledException('Error in deleteExistingRequiredResources:::' + e.getMessage());
         }
     }
 
@@ -329,7 +367,7 @@ public without sharing class AppointmentController {
             
 
         } catch (Exception e) {
-            throw new Exception('Error in deleteExistingRequiredResources:::' + e.getMessage());
+            throw new AuraHandledException('Error in deleteExistingRequiredResources:::' + e.getMessage());
         }
     }
 
@@ -346,7 +384,7 @@ public without sharing class AppointmentController {
             System.debug('Added new required resource::: ' + serviceResourceId + 'to workorder ' + workOrderId);
 
         } catch (Exception e) {
-            throw new Exception('Error in  addNewRequiredResource resource ' + serviceResourceId + ' : ' + e.getMessage());
+            throw new AuraHandledException('Error in  addNewRequiredResource resource ' + serviceResourceId + ' : ' + e.getMessage());
         }
     }
 
@@ -357,6 +395,7 @@ public without sharing class AppointmentController {
             Map<String, String> resultArray = new Map<String, String>();
             String serviceResourceId = [SELECT Id from ServiceResource WHERE RelatedRecordId =: userId][0]?.Id;
             String workOrderId = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
+
             if(workOrderId != null){
 
                 deleteExistingRequiredResources(workOrderId);
@@ -379,16 +418,19 @@ public without sharing class AppointmentController {
                 resultArray.put('error', serviceResourceId);
             }
 
+
+            return resultArray;
+
         } catch (Exception e) {
-            throw new Exception('Error in assignCurrentUserAsRequiredResource:::' + e.getMessage());
+            throw new AuraHandledException('Error in assignCurrentUserAsRequiredResource:::' + e.getMessage());
             
         }
 
-        return resultArray;
+        
     }
 
     @AuraEnabled
-    public static Boolean isUserExcludedResource(String userId){
+    public static Boolean isUserExcludedResource(String userId, String serviceAppointmentId){
         try {
         
             String serviceResourceId = [SELECT Id from ServiceResource WHERE RelatedRecordId =: userId][0]?.Id;
@@ -403,7 +445,7 @@ public without sharing class AppointmentController {
                 
             }
         } catch (Exception e) {
-            throw new Exception('Error in isUserExcludedResource:::' + e.getMessage());
+            throw new AuraHandledException('Error in isUserExcludedResource:::' + e.getMessage());
         }
 
         return false;

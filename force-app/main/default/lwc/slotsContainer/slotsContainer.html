@@ -1,5 +1,5 @@
 <template>
-      <div>
+      <div class="slots-container">
         <div>{pageTitle}</div>
           <template for:each={formattedTimeSlotArray} for:item="timeSlotNewArray">
     
@@ -16,10 +16,12 @@
               </template>
 
                   <template for:each={timeSlotNewArray.timeArray} for:item="timeArray">
-                      <button key={timeArray} class="slds-button slds-button_neutral timeslotButton" 
-                          title={timeArray.fullValue} slot="actions" onclick={handleTimeSlotClickEvent}>
-                          {timeArray.label}
-                      </button>
+                        <div class="time-slot-btn-wrapper" key={timeArray}>
+                        <button class="slds-button slds-button_neutral timeslotButton" 
+                            title={timeArray.fullValue} slot="actions" onclick={handleTimeSlotClickEvent}>
+                            {timeArray.label}
+                        </button>
+                        </div>
                   </template>
                   
             </template>

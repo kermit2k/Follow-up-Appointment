@@ -36,10 +36,9 @@ export default class SettingsContainer extends LightningElement {
     _serviceAppointmentId;
 
     @api set recordId(recordId) {
-        this._serviceAppointmentId = "08p7e000000CxXIAA0"
-        /*if (recordId !== this._serviceAppointmentId) {
+        if (recordId !== this._serviceAppointmentId) {
             this._serviceAppointmentId = recordId;
-        }*/
+        }
     }
 
     get recordId() {
@@ -49,7 +48,7 @@ export default class SettingsContainer extends LightningElement {
     connectedCallback(){
         
         this.enableAssignToMe = true;
-        this.enableAssignToEveryAvailable = true;
+        this.enableAssignToEveryAvailable = false;
     }
 
 

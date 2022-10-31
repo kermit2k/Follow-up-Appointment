@@ -1,4 +1,8 @@
 <template>
+    <template if:true={showToast}>
+        <c-custom-toast variant={toastVariant} title={toastTitle} message={toastMessage}></c-custom-toast> 
+    </template>
+
     <div class="landing-container">
         <div class="landing-section">
             <c-compact-appointment-info
@@ -28,5 +32,5 @@
                 worktype-displayname="">
             </c-scheduling-container>
         </div>
-    </div>   
+    </div>  
 </template>

@@ -7,7 +7,6 @@ import getSlotsByAssignmentMethod from '@salesforce/apex/AppointmentController.g
 import updateSA from '@salesforce/apex/AppointmentController.updateSA';
 import scheduleSA from '@salesforce/apex/AppointmentController.scheduleSA';
 import updateSASlot from '@salesforce/apex/AppointmentController.updateSASlot';
-import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c/utils';
@@ -81,6 +80,13 @@ export default class Landing extends LightningElement {
     @api timeSlotDateWise;
     timeSlotWiseTemp=[];
     selectedSlotStringForToast = "";
+
+    //Toast
+    @track showToast = false;
+    toastVariant = "success";
+    toastTitle = "";
+    toastMessage = "";
+
     
 
     ARRIVAL_TIME_TEXT = "Exact Appointment Times";
@@ -159,7 +165,7 @@ export default class Landing extends LightningElement {
     }
     getInitData(){
         this.dataLoaded = false;
-        getServiceAppointment({serviceAppointmentId: '08p7e000000CxXIAA0'})
+        getServiceAppointment({serviceAppointmentId: this.serviceAppointmentId})
             .then((data)=>{
                 console.log('init data ::: ' + JSON.stringify(data));
                 if(data.error){
@@ -563,11 +569,14 @@ export default class Landing extends LightningElement {
                 .then((data) => {
                     if(data.error) {
                         this.showSpinnerInChildClass = false;
-                        const toastEventError = new ShowToastEvent({
+                        this.showToast = true;
+                        this.toastVariant = "warning";
+                        this.toastTitle = this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message;
+                        /*const toastEventError = new ShowToastEvent({
                             title: this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message,
                             variant: "warning"
                         });
-                        this.dispatchEvent(toastEventError);
+                        this.dispatchEvent(toastEventError);*/
                         console.log(this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message +"  "+ data.error);
                     } else {
                         // If the transaction Success, run the FSL schedule service
@@ -576,11 +585,14 @@ export default class Landing extends LightningElement {
                             if(data.error) {
                                 this.revertSA();
                                 this.showSpinnerInChildClass = false;
-                                const toastEventError = new ShowToastEvent({
+                                this.showToast = true;
+                                this.toastVariant = "warning";
+                                this.toastTitle = this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message;
+                                /*const toastEventError = new ShowToastEvent({
                                     title: this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message,
                                     variant: "warning"
                                 });
-                                this.dispatchEvent(toastEventError);
+                                this.dispatchEvent(toastEventError);*/
                                 console.log("Error while executing FSL API : " +"  "+ data.error);
                             } else {
                                 console.log('Service appointment Scheduled : '+data);
@@ -594,31 +606,40 @@ export default class Landing extends LightningElement {
                             this.revertSA();
                             this.showSpinnerInChildClass = false;
                             //TODO: add the labels
-                            const toastEventError = new ShowToastEvent({
+                            this.showToast = true;
+                            this.toastVariant = "warning";
+                            this.toastTitle = this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message;
+                            /*const toastEventError = new ShowToastEvent({
                                 title: this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message,
                                 variant: "warning"
                             });
-                            this.dispatchEvent(toastEventError);
+                            this.dispatchEvent(toastEventError);*/
                             console.log( "Error while executing FSL API : " +"  "+ error);
                         })
                     }
                     
                 }).catch(error => {
                     this.showSpinnerInChildClass = false;
-                    const toastEventError = new ShowToastEvent({
+                    this.showToast = true;
+                    this.toastVariant = "warning";
+                    this.toastTitle = this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message;
+                    /*const toastEventError = new ShowToastEvent({
                         title: this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message,
                         variant: "warning"
                     });
-                    this.dispatchEvent(toastEventError);
+                    this.dispatchEvent(toastEventError);*/
                     console.log(this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message +"  "+ error);
                 })
             } else {
                 this.showSpinnerInChildClass = false;
-                const toastEvent = new ShowToastEvent({
+                this.showToast = true;
+                this.toastVariant = "warning";
+                this.toastTitle = this.LABELS.Appointment_ReBooking_same_appointment_selected_warning;
+                /*const toastEvent = new ShowToastEvent({
                     title: this.LABELS.Appointment_ReBooking_same_appointment_selected_warning,
                     variant: "warning"
                 });
-                this.dispatchEvent(toastEvent);
+                this.dispatchEvent(toastEvent);*/
             }
             
         } else {
@@ -638,23 +659,30 @@ export default class Landing extends LightningElement {
             serviceAppointmentId: this.serviceAppointmentId, statusId: this.rescheduleStatusId
         }).then((data) => {
             if (data.success) {
-                const toastEvent = new ShowToastEvent({
+                this.showToast = true;
+                this.toastVariant = "success";
+                this.toastTitle = this.LABELS.Appointment_ReBooking_toastMessage_appointment_reschedule;
+                this.toastMessage = this.selectedSlotStringForToast;
+                /*const toastEvent = new ShowToastEvent({
                     title: this.LABELS.Appointment_ReBooking_toastMessage_appointment_reschedule,
                     message: this.selectedSlotStringForToast,
                     variant: "success"
                 });
-                this.dispatchEvent(toastEvent);
+                this.dispatchEvent(toastEvent);*/
                 this.isAppointmentConfirmed = true;
             } else if(data.urlExpired) {
                 console.log('invalidURL #9:');
                 this.show_InvalidURLpage();  
             } else {
                 if(data.error) {
-                    const toastEventError = new ShowToastEvent({
+                    this.showToast = true;
+                    this.toastVariant = "warning";
+                    this.toastTitle = this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message;
+                    /*const toastEventError = new ShowToastEvent({
                         title: this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message,
                         variant: "warning"
                     });
-                    this.dispatchEvent(toastEventError);
+                    this.dispatchEvent(toastEventError);*/
                     console.log(this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message +"  "+ data.error);
                 }
             }

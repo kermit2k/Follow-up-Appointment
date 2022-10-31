@@ -1,13 +1,32 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
+
+const SUCCESS_CLASS = "slds-notify slds-notify_toast slds-theme_success";
+const WARNING_CLASS = "slds-notify slds-notify_toast slds-theme_warning";
+const ERROR_CLASS = "slds-notify slds-notify_toast slds-theme_error";
 
 export default class CustomToast extends LightningElement {
 
-    @api _variant;
-    @api _title;
-    @api _message;
+    _variant;
+    _title;
+    _message;
+    @track toastClass;
+
+    connectedCallback(){
+        if(this._variant){
+            if (this._variant == "success"){
+                this.toastClass = SUCCESS_CLASS;
+            }
+            else if (this._variant == "warning"){
+                this.toastClass = WARNING_CLASS;
+            }
+            else if (this._variant == "error"){
+                this.toastClass = ERROR_CLASS;
+            }
+        }
+    }
 
     @api get variant() {
-        return _variant;
+        return this._variant;
     }
 
     set variant(value) {
@@ -17,7 +36,7 @@ export default class CustomToast extends LightningElement {
     }
 
     @api get title() {
-        return _title;
+        return this._title;
     }
 
     set title(value) {
@@ -27,12 +46,16 @@ export default class CustomToast extends LightningElement {
     }
 
     @api get message() {
-        return _message;
+        return this._message;
     }
 
     set message(value) {
         if(value) {
             this._message = value;
         }
+    }
+
+    handleCloseToast(){
+        //TODO: close toast
     }
 }

@@ -689,6 +689,10 @@ export default class Landing extends LightningElement {
             this.showSpinnerInChildClass = false;
         })
     }
+
+    HandleCloseToast(){
+        this.showToast = false;
+    }
     /************************************************************************* */
     //from reschdule main
 

@@ -23,6 +23,10 @@ export default class CustomToast extends LightningElement {
                 this.toastClass = ERROR_CLASS;
             }
         }
+        //this.showToast = true;
+        setTimeout(() => {
+            this.handleCloseToastEvent();
+        }, 5000);
     }
 
     @api get variant() {
@@ -56,6 +60,13 @@ export default class CustomToast extends LightningElement {
     }
 
     handleCloseToast(){
-        //TODO: close toast
+        this.handleCloseToastEvent();
+    }
+
+    handleCloseToastEvent() {
+        const customEvent = new CustomEvent('closetoast', {
+            detail:{ } 
+        });
+       this.dispatchEvent(customEvent);
     }
 }

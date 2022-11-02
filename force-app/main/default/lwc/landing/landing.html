@@ -1,6 +1,6 @@
 <template>
     <template if:true={showToast}>
-        <c-custom-toast variant={toastVariant} title={toastTitle} message={toastMessage}></c-custom-toast> 
+        <c-custom-toast variant={toastVariant} title={toastTitle} message={toastMessage} onclosetoast ={HandleCloseToast}></c-custom-toast> 
     </template>
 
     <div class="landing-container">

@@ -9,7 +9,22 @@
         </c-aa-rebooking-calendar>
     </div>
 
+    <!--recommended slots-->
+    <template if:true={timeSlotObjectFilteredByGrades}>
+        <c-slots-container
+            page-title={recommendedAppointmentsTitle} 
+            showexactarrivaltime = {showExactArrivalTime} 
+            shownoofdaysbeforeafterweek = {noOfDaysBeforeAfterWeek}
+            selecteddate = {selectedDate}
+            maxvaliddate = {maxValidCalendarDate}
+            onslotselection = {onSlotSelection}
+            oncustomeventcalled = {onCustomEventCalled}
+            timeslotobject = {timeSlotObjectFilteredByGrades}>
+        </c-slots-container >
+    </template>
+    <!--other slots-->
     <c-slots-container 
+        page-title={allAppointmentsTitle}
         showexactarrivaltime = {showExactArrivalTime} 
         shownoofdaysbeforeafterweek = {noOfDaysBeforeAfterWeek}
         selecteddate = {selectedDate}

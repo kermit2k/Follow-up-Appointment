@@ -1,6 +1,6 @@
 <template>
       <div class="slots-container">
-        <div>{pageTitle}</div>
+        <div class="page-title">{pageTitle}</div>
           <template for:each={formattedTimeSlotArray} for:item="timeSlotNewArray">
     
               <template if:false={timeSlotNewArray.hideFromView}>
@@ -8,11 +8,11 @@
                       {timeSlotNewArray.title}
                   </div>
               
-                  <template if:false={timeSlotNewArray.timeArray}> 
-                      <p class="noSlotLabel" key={timeSlotNewArray}>
-                          {LABELS.Appointment_ReBooking_no_available_appointments_msg}
-                      </p>
-                  </template>
+                    <template if:false={timeSlotNewArray.timeArray}> 
+                        <p class="noSlotLabel" key={timeSlotNewArray}>
+                            {LABELS.Appointment_ReBooking_no_available_appointments_msg}
+                        </p>
+                    </template>
               </template>
 
                   <template for:each={timeSlotNewArray.timeArray} for:item="timeArray">

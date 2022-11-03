@@ -1,6 +1,10 @@
 import { LightningElement, api, track } from 'lwc';
 import customLabels from './labels';
 
+//TODO takes from labels
+const ALL_APPOINTMENTS_TITLE = 'All Available Appointments';
+const RECOMMENDED_APPOINTMENTS_TITLE = 'Recommended Appointments';
+
 export default class SlotsContainer extends LightningElement {
     LABELS = customLabels;
     @api timeSlotDateWise = [];
@@ -10,13 +14,14 @@ export default class SlotsContainer extends LightningElement {
     @api selectedDate;
     @api showExactArrivalTime;
     @api maxValidCalendarDate;
-    @api pageTitle = "All available";
+    pageTitle;
     timeSlotTitle;
     nonAvailableDateArray = [];
     @api noOfDaysBeforeAfterWeek = 2;
     firstDayOfTheWeek;
     lastDayOfTheWeek;
     firstSlotDate;
+    //@track isRecommended;
 
     MONTHNAME = [ this.LABELS.Appointment_ReBooking_MonthName_January,
                     this.LABELS.Appointment_ReBooking_MonthName_February,
@@ -112,6 +117,18 @@ export default class SlotsContainer extends LightningElement {
             console.log("Max valid date is : "+value);
             this.maxValidCalendarDate = value;
         }
+    }
+
+    @api
+    get pageTitle() {
+        return this._pageTitle;
+    }
+
+    set pageTitle(value) {
+       this._pageTitle = value;
+       //if (this._pageTitle == RECOMMENDED_APPOINTMENTS_TITLE){
+       // this.isRecommended = true;
+       //}
     }
     
     handleTimeSlotTitle() {

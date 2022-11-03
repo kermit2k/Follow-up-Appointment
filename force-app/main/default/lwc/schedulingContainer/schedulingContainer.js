@@ -12,6 +12,10 @@ import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import {calculateMaxValidHorizonDate} from 'c/utils';
 
+//TODO takes from labels
+const ALL_APPOINTMENTS_TITLE = 'All Available Appointments';
+const RECOMMENDED_APPOINTMENTS_TITLE = 'Recommended Appointments';
+
 export default class SchedulingContainer extends LightningElement {
     guestToken;
     schedulePolicyId;
@@ -55,6 +59,10 @@ export default class SchedulingContainer extends LightningElement {
     backButtonTitleNoSlot = this.LABELS.Appointment_ReBooking_back_button_title_no_slot;
 
     show_confirmBtnLayout = false;
+    _recommendedScore;
+    @api allAppointmentsTitle = ALL_APPOINTMENTS_TITLE;
+    @api recommendedAppointmentsTitle = RECOMMENDED_APPOINTMENTS_TITLE;
+    timeSlotObjectFilteredByGrades;
 
     @api get serviceappointmentobject(){
         return this.serviceAppointmentObject;
@@ -114,7 +122,8 @@ export default class SchedulingContainer extends LightningElement {
     set timeslotobject(value) {
         this.showDataSpinner = false;
         if(value){
-            this.timeSlotObject = value;  
+            this.timeSlotObject = value;
+            this.filterTimeSlotObjectByGrade(this.timeSlotObject);  
         }
     }
     
@@ -165,6 +174,16 @@ export default class SchedulingContainer extends LightningElement {
     set worktypename(value) {
         this.WorkTypeName = value;
     }
+
+    @api
+    get recommendedScore() {
+        return this._recommendedScore;
+    }
+
+    set recommendedScore(value) {
+       this._recommendedScore = value;
+    }
+
 
     onDateSelected(event) {
         this.selectedDate = event.detail.date;
@@ -299,6 +318,19 @@ export default class SchedulingContainer extends LightningElement {
         this.show_confirmBtnLayout = false;
         // allow scrolling
         document.body.style.overflow = 'auto';
+    }
+
+    filterTimeSlotObjectByGrade(timeSlotObject){
+        let timeSlotArr = Object.values(timeSlotObject);
+        this.timeSlotObjectFilteredByGrades = timeSlotArr.filter(this.filterByGrade(this._recommendedScore));
+    }
+
+    filterByGrade(score){
+        return function(element) {
+            let splittedElement = element.split('#');
+            let grade = splittedElement[2];
+            return grade >= score;
+        }
     }
 
 }

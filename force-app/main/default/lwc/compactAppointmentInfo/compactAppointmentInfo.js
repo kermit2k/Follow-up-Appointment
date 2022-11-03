@@ -31,10 +31,12 @@ export default class CompactAppointmentInfo extends LightningElement {
     get appointmentDateTime(){
         let dateTimeStr;
 
-        if(this.serviceAppointmentObject && this.serviceAppointmentObject['ArrivalWindowStartTime'] && this.serviceAppointmentObject['ArrivalWindowEndTime']){
+        if(this.serviceAppointmentObject && this.isNotNullOrUndefined(this.serviceAppointmentObject['ArrivalWindowStartTime'])
+        && this.isNotNullOrUndefined(this.serviceAppointmentObject['ArrivalWindowEndTime'])){
             dateTimeStr = formatAppointmentDateandHourRange(this.serviceAppointmentObject['ArrivalWindowStartTime'], this.serviceAppointmentObject['ArrivalWindowEndTime']);
         }
-        else if (this.serviceAppointmentObject && this.serviceAppointmentObject['SchedStartTime'] && this.serviceAppointmentObject['SchedEndTime']){
+        else if (this.serviceAppointmentObject && this.isNotNullOrUndefined(this.serviceAppointmentObject['SchedStartTime'])
+        && this.isNotNullOrUndefined(this.serviceAppointmentObject['SchedEndTime'])){
             dateTimeStr = formatAppointmentDateandHourRange(this.serviceAppointmentObject['SchedStartTime'], this.serviceAppointmentObject['SchedEndTime']);
         }
 
@@ -42,6 +44,10 @@ export default class CompactAppointmentInfo extends LightningElement {
             dateTimeStr = "";
         }
         return dateTimeStr; 
+    }
+
+    isNotNullOrUndefined(value){
+        return value && value != "null";
     }
 
     @api

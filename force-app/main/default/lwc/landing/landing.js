@@ -77,7 +77,7 @@ export default class Landing extends LightningElement {
     dateArrayForQuery = [];
     //@api serviceAppointmentObject;
     //@api serviceResourceObject;
-    @api timeSlotDateWise;
+    @track timeSlotDateWise;
     timeSlotWiseTemp=[];
     selectedSlotStringForToast = "";
 
@@ -103,11 +103,13 @@ export default class Landing extends LightningElement {
     constructor() {
         super();
         this.template.addEventListener('closemodal', this.closeModal);
-        this.template.addEventListener('openmodal', this.openModal);       
+        this.template.addEventListener('openmodal', this.openModal); 
+        this.template.addEventListener('onassignmentmethodchanged', this.handleCurrentAssignmentMethodChange);      
 
     }
 
     connectedCallback(){
+
         console.log("connected before assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
         this._previousServiceAppointmentId = this.serviceAppointmentId;
         console.log("connected after assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
@@ -391,6 +393,10 @@ export default class Landing extends LightningElement {
         this.dateArrayForQuery = Array.from(new Set(this.dateArrayForQuery));
     }
 
+    removeDatesFromCashArray(){
+        this.dateArrayForQuery = [];
+    }
+
     showAlertWithError(errorMessage) {
         alert(errorMessage);
     }
@@ -434,7 +440,6 @@ export default class Landing extends LightningElement {
                 
                 console.log("Run appointment query for  date "+loopdate);
 
-                
                 updateSA({serviceAppointmentId: this.serviceAppointmentId, earliestStartDate: loopdate,
                     arrivalStartDate: null, arrivalEndDate: null })
                 .then((saData) => {
@@ -448,7 +453,8 @@ export default class Landing extends LightningElement {
                             arrivalWindowFlag: this.showExactArrivalTime, 
                             userId: this.userId, 
                             currentAssignmentMethod: this.currentAssignmentMethod,
-                            cleanupRequired: this.isCleanupRequired })
+                            cleanupRequired: this.isCleanupRequired
+                            })
                         .then((data) => {
 
                             this.revertSA();
@@ -552,7 +558,7 @@ export default class Landing extends LightningElement {
         }
     }
 
-    onServiceAppointmentUpdate(event) {
+    onServiceAppointmentUpdate = (event) => {
         let selectedSlotStart = event.detail.selectedSlotStart;
         let selectedSlotEnd = event.detail.selectedSlotEnd;
         this.selectedSlotStringForToast = formatAppointmentDateandHourRange(selectedSlotStart, selectedSlotEnd);
@@ -580,7 +586,7 @@ export default class Landing extends LightningElement {
                         console.log(this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message +"  "+ data.error);
                     } else {
                         // If the transaction Success, run the FSL schedule service
-                        scheduleSA({serviceAppointmentId: this.serviceAppointmentId, schedulePolicy: this.schedulingPolicyId})
+                        scheduleSA({serviceAppointmentId: this.serviceAppointmentId, schedulingPolicyId: this.schedulingPolicyId})
                         .then((data) => {
                             if(data.error) {
                                 this.revertSA();
@@ -1022,4 +1028,29 @@ export default class Landing extends LightningElement {
             }
         }
     }
+
+    handleCurrentAssignmentMethodChange = (event) => {
+        const updatedValue = event.detail.assignmentMethod;
+        const selectedDate = event.detail.selecteddate;
+        
+        this.currentAssignmentMethod = assignmentMethod[updatedValue];
+
+        //dispatch get Slots
+        let firstDateOfWeek = this.getFirstDayOfWeek(selectedDate);
+
+        //clear cash of slots? and get new slots
+        this.clearSlots();
+        
+        this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
+
+    }
+
+    clearSlots(){
+        
+        this.timeSlotDateWise = [];
+        this.timeSlotWiseTemp = [];
+        this.removeDatesFromCashArray();
+    }
+
+    
 }

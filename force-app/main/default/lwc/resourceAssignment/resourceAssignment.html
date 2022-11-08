@@ -1,3 +1,12 @@
 <template>
+    <div class="container">
+        <div class="title">{resourceAssignmentTitle}</div>
+        <lightning-radio-group name="resourceAssignment"
+                          label=""
+                          options={options}
+                          value={value}
+                          type="radio"
+                          onchange={handleAssignmentMethodChange}></lightning-radio-group>
+    </div>
     
 </template>

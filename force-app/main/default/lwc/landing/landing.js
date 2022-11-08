@@ -447,13 +447,10 @@ export default class Landing extends LightningElement {
                     
                         //console.log("Run appointment query for  date "+loopdate);
 
-                        getSlotsByAssignmentMethod({serviceAppointmentId: this.serviceAppointmentId,
+                        getSlots({serviceAppointmentId: this.serviceAppointmentId,
                             operatingHoursId: this.operatingHoursId,
                             schedulingPolicyId: this.schedulingPolicyId,
-                            arrivalWindowFlag: this.showExactArrivalTime, 
-                            userId: this.userId, 
-                            currentAssignmentMethod: this.currentAssignmentMethod,
-                            cleanupRequired: this.isCleanupRequired
+                            arrivalWindowFlag: this.showExactArrivalTime,
                             })
                         .then((data) => {
 

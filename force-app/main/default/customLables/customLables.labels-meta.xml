@@ -294,4 +294,92 @@
         <shortDescription>No available appointment - title</shortDescription>
         <value>No available appointments</value>
     </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_today_text</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Show today text followed by date in time slot header</shortDescription>
+        <value>Today</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_your_appt_was_canceled_msg</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Cancel appointment - toast message</shortDescription>
+        <value>Appointment was canceled.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_toastMessage_cancel_appointment_fail_message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Toast message cancel appointment fails to get update</shortDescription>
+        <value>We couldn’t cancel the appointment. Try again later.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_toastMessage_appointment_confirmed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Toast message when appointment gets confirmed</shortDescription>
+        <value>Appointment was confirmed.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_toastMessage_confirm_appointment_fail_message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Toast message confirm appointment fails to get update</shortDescription>
+        <value>We couldn’t confirm the appointment. Try again later.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_selected_appointment_msg</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>New Appointment - title</shortDescription>
+        <value>SELECTED APPOINTMENT</value>
+    </labels>
+    <labels>
+        <fullName>AppointmentAssistance_next_button_title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>button text</shortDescription>
+        <value>Next</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_select_an_available_appointment_time</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Reschedule appointment message</shortDescription>
+        <value>Select an available appointment time</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_select_new_date_to_reschedule</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Reschedule appointment message</shortDescription>
+        <value>Reschedule your appointment</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_current_appointment_msg</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Current Appointment - title</shortDescription>
+        <value>CURRENT APPOINTMENT</value>
+    </labels>
+    <labels>
+        <fullName>AppointmentAssistance_confirmation_service_requested</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>confirmation page section title</shortDescription>
+        <value>SERVICE TYPE</value>
+    </labels>
 </CustomLabels>

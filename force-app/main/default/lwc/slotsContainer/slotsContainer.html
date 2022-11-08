@@ -16,12 +16,10 @@
               </template>
 
                   <template for:each={timeSlotNewArray.timeArray} for:item="timeArray">
-                        <div class="time-slot-btn-wrapper" key={timeArray}>
-                        <button class="slds-button slds-button_neutral timeslotButton" 
-                            title={timeArray.fullValue} slot="actions" onclick={handleTimeSlotClickEvent}>
-                            {timeArray.label}
-                        </button>
-                        </div>
+                    <button key={timeArray} class="slds-button slds-button_neutral timeslotButton" 
+                        title={timeArray.fullValue} slot="actions" onclick={handleTimeSlotClickEvent}>
+                        {timeArray.label}
+                    </button>
                   </template>
                   
             </template>

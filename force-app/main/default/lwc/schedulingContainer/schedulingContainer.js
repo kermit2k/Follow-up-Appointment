@@ -285,6 +285,7 @@ export default class SchedulingContainer extends LightningElement {
             }
         });
         this.dispatchEvent(customEvent);
+        this.show_confirmBtnLayout = false;
     }
 
     runApexQueryToChangeEarlistStartDate(selectedDate) {

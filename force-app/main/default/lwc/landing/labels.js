@@ -3,13 +3,14 @@ import Appointment_ReBooking_select_new_date_to_reschedule from '@salesforce/lab
 import Appointment_ReBooking_select_an_available_appointment_time from '@salesforce/label/c.Appointment_ReBooking_select_an_available_appointment_time';
 import Appointment_ReBooking_current_appointment_msg from '@salesforce/label/c.Appointment_ReBooking_current_appointment_msg';
 import Appointment_ReBooking_accept_new_appointment_button from '@salesforce/label/c.Appointment_ReBooking_accept_new_appointment_button';
-import Appointment_ReBooking_back_button_title from '@salesforce/label/c.Appointment_ReBooking_back_button_title';
 import AppointmentAssistance_next_button_title from '@salesforce/label/c.AppointmentAssistance_next_button_title';
 import Appointment_ReBooking_new_appointment_msg from '@salesforce/label/c.Appointment_ReBooking_new_appointment_msg';
 import Appointment_ReBooking_same_appointment_selected_warning from '@salesforce/label/c.Appointment_ReBooking_same_appointment_selected_warning';
 import AppointmentAssistance_confirmation_service_requested from '@salesforce/label/c.AppointmentAssistance_confirmation_service_requested';
 import Appointment_ReBooking_selected_appointment_msg from '@salesforce/label/c.Appointment_ReBooking_selected_appointment_msg';
 import Appointment_ReBooking_toastMessage_appointment_reschedule from '@salesforce/label/c.Appointment_ReBooking_toastMessage_appointment_reschedule';
+import AppointmentAssistance_confirmation_failure_message from '@salesforce/label/c.AppointmentAssistance_confirmation_failure_message';
+import Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message from '@salesforce/label/c.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message';
 
 const customLabels = {
     Appointment_ReBooking_select_new_date_to_reschedule,
@@ -17,13 +18,14 @@ const customLabels = {
     Appointment_ReBooking_current_appointment_msg,
     Appointment_ReBooking_accept_new_appointment_button,
     AppointmentAssistance_next_button_title,
-    Appointment_ReBooking_back_button_title,
     Appointment_ReBooking_new_appointment_msg,
     Appointment_ReBooking_same_appointment_selected_warning,
     AppointmentAssistance_confirmation_service_requested,
     Appointment_ReBooking_selected_appointment_msg,
     Reschedule_Appointment_page_title,
-    Appointment_ReBooking_toastMessage_appointment_reschedule
+    Appointment_ReBooking_toastMessage_appointment_reschedule,
+    AppointmentAssistance_confirmation_failure_message,
+    Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message
 }
 
 export default customLabels;

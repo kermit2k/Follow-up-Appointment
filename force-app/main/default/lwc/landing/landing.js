@@ -733,8 +733,8 @@ export default class Landing extends LightningElement {
     @api noOfDaysBeforeAfterWeek=2;
     @api worktypeDisplayname;
     
-    backButtonTitle = this.LABELS.Appointment_ReBooking_back_button_title;
-    backButtonTitleNoSlot = this.LABELS.Appointment_ReBooking_back_button_title_no_slot;
+    //backButtonTitle = this.LABELS.Appointment_ReBooking_back_button_title;
+    //backButtonTitleNoSlot = this.LABELS.Appointment_ReBooking_back_button_title_no_slot;
 
     show_confirmBtnLayout = false;
 

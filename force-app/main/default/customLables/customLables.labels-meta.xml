@@ -262,4 +262,36 @@
         <shortDescription>Toast message when appointment gets rescheduled</shortDescription>
         <value>Appointment was rescheduled.</value>
     </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_same_appointment_selected_warning</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Reschedule appointment - Same slot selected warning</shortDescription>
+        <value>Slot already booked. Please select another slot.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Toast message reschedule appointment fails to get update</shortDescription>
+        <value>We couldn’t book the appointment. Try again later.</value>
+    </labels>
+    <labels>
+        <fullName>AppointmentAssistance_confirmation_failure_message</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>confirmation page failure message when booking fails</shortDescription>
+        <value>It’s not you, it’s us. Please start over.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_no_available_appointments_msg</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>No available appointment - title</shortDescription>
+        <value>No available appointments</value>
+    </labels>
 </CustomLabels>

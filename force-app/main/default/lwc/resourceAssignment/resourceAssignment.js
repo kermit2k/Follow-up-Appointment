@@ -6,6 +6,12 @@ export default class ResourceAssignment extends LightningElement {
     @api userName="";
     resourceAssignmentTitle ="Mobile Worker";
     @api selecteddate;
+    @api isExcluded;
+    @api excludedMsg = "Excluded msg..";
+
+    @api get showExcludedMsg(){
+        return this.isExcluded;
+    }
 
     get options() {
         return [

@@ -10,6 +10,8 @@ import Appointment_ReBooking_new_appointment_msg from '@salesforce/label/c.Appoi
 import Appointment_ReBooking_accept_new_appointment_button from '@salesforce/label/c.Appointment_ReBooking_accept_new_appointment_button';
 import Appointment_ReBooking_assigned_to_you from '@salesforce/label/c.Appointment_ReBooking_assigned_to_you';
 import Appointment_ReBooking_assigned_to_any_available_worker from '@salesforce/label/c.Appointment_ReBooking_assigned_to_any_available_worker';
+import Appointment_ReBooking_all_available_appointments from '@salesforce/label/c.Appointment_ReBooking_all_available_appointments';
+import Appointment_ReBooking_recommended_appointments from '@salesforce/label/c.Appointment_ReBooking_recommended_appointments';
 
 const customLabels = {
     Appointment_ReBooking_your_appt_was_canceled_msg,
@@ -23,7 +25,9 @@ const customLabels = {
     Appointment_ReBooking_new_appointment_msg,
     Appointment_ReBooking_accept_new_appointment_button,
     Appointment_ReBooking_assigned_to_you,
-    Appointment_ReBooking_assigned_to_any_available_worker
+    Appointment_ReBooking_assigned_to_any_available_worker,
+    Appointment_ReBooking_all_available_appointments,
+    Appointment_ReBooking_recommended_appointments
 }
 
 export default customLabels;

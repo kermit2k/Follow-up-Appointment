@@ -23,6 +23,9 @@
 }
 .divInfo{
     margin: 16px;
+    border: 1px solid rgba(159, 170, 181, 0.5);
+    border-radius: 12px;
+    padding: 16px;
 }
 h2{
     color: rgb(0, 0, 0);
@@ -116,10 +119,9 @@ svg[class*="slds-button__icon_left"]{
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px;
+    padding: 0 16px 16px 16px;
     gap: 16px;
     height: 80px;
-    border-top: 1px solid rgba(159, 170, 181, 0.5);
     border-radius: 0px;
     flex: none;
     order: 3;
@@ -146,6 +148,7 @@ svg[class*="slds-button__icon_left"]{
     padding: 0px;
     isolation: isolate;
     height: 48px;
+    padding: 16px;
 }
 .head-line-work-type-name{
     font-weight: 600;

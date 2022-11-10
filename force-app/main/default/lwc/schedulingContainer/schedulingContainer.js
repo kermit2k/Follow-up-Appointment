@@ -48,7 +48,6 @@ export default class SchedulingContainer extends LightningElement {
     showDataSpinner = false;
     inFlowMode = false;
     newAppointmentDate;
-    newAppointmentTime;
     maxValidCalendarDate;
     minValidCalendarDate;
     @api nonAvailableDateArray = [];
@@ -91,6 +90,7 @@ export default class SchedulingContainer extends LightningElement {
             this.SchedEndTime = value.SchedEndTime;
             this.ServiceAppointmentDescription = value.ServiceAppointmentDescription;
             this.ServiceAppointmentDueDate = value.DueDate;
+            this.appointmentNumber = value.AppointmentNumber;
         }
         this.getHeadlineDate();
     }
@@ -328,8 +328,7 @@ export default class SchedulingContainer extends LightningElement {
         if(this.showExactArrivalTime) {
             time = this.getFormattedTimeFromDate(start);
         }
-        this.newAppointmentDate = dateLong;
-        this.newAppointmentTime = time;
+        this.newAppointmentDate = dateLong + ", " + time;
         this.show_confirmBtnLayout = true;
         // lock scrolling
         document.body.style.overflow = 'hidden';

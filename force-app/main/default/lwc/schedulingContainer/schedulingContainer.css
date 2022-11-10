@@ -128,7 +128,7 @@ svg[class*="slds-button__icon_left"]{
     align-self: stretch;
     flex-grow: 0;
 }
-.modal-assign-to{
+.secondary-info{
     font-weight: 400;
     font-size: 16px;
     line-height: 22px;

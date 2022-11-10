@@ -398,4 +398,22 @@
         <shortDescription>Assigned to any available worker</shortDescription>
         <value>Assigned to any available worker</value>
     </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_all_available_appointments</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Title for all available slots</shortDescription>
+        <value>All Available Appointments</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_recommended_appointments</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Title for recommended slots</shortDescription>
+        <value>Recommended Appointments</value>
+    </labels>
+    
+    
 </CustomLabels>

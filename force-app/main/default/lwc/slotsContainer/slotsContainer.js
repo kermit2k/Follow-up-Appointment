@@ -1,9 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import customLabels from './labels';
 
-//TODO takes from labels
-const ALL_APPOINTMENTS_TITLE = 'All Available Appointments';
-const RECOMMENDED_APPOINTMENTS_TITLE = 'Recommended Appointments';
 
 export default class SlotsContainer extends LightningElement {
     LABELS = customLabels;

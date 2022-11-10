@@ -13,9 +13,6 @@ import { CloseActionScreenEvent } from 'lightning/actions';
 import {calculateMaxValidHorizonDate} from 'c/utils';
 import getUserName from '@salesforce/apex/AppointmentController.getUserName';
 
-//TODO takes from labels
-const ALL_APPOINTMENTS_TITLE = 'All Available Appointments';
-const RECOMMENDED_APPOINTMENTS_TITLE = 'Recommended Appointments';
 const assignmentMethod = {
     ASSIGN_TO_ME: "assignToMe",
     ASSIGN_TO_ANY_AVIALABLE: "assignToAnyAvailable"
@@ -67,8 +64,8 @@ export default class SchedulingContainer extends LightningElement {
 
     show_confirmBtnLayout = false;
     _recommendedScore;
-    @api allAppointmentsTitle = ALL_APPOINTMENTS_TITLE;
-    @api recommendedAppointmentsTitle = RECOMMENDED_APPOINTMENTS_TITLE;
+    @api allAppointmentsTitle = this.LABELS.Appointment_ReBooking_all_available_appointments;
+    @api recommendedAppointmentsTitle = this.LABELS.Appointment_ReBooking_recommended_appointments;
     timeSlotObjectFilteredByGrades;
     @api userId;
 

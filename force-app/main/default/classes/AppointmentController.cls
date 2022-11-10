@@ -149,7 +149,7 @@ public without sharing class AppointmentController {
         Map<String, Object> slotsList = new Map<String, Object>();
         //FSL.AppointmentBookingService.SortResultsBy sortByGrade = FSL.AppointmentBookingService.SortResultsBy.Grade;
         try {
-            if(serviceAppointmentId != null) {
+            if(serviceAppointmentId != null) {           
                 ServiceAppointment sa = [SELECT Id, ServiceTerritoryId
                                         FROM ServiceAppointment
                                         WHERE ID =: serviceAppointmentId
@@ -165,10 +165,10 @@ public without sharing class AppointmentController {
                                         WHERE ID =: st.OperatingHoursID 
                                         ][0];   
                     timeZone = System.Timezone.getTimeZone(oh.TimeZone);
-                        
+
                 }
 
-                List<FSL.AppointmentBookingSlot> timeSlots = FSL.AppointmentBookingService.GetSlots(
+                    List<FSL.AppointmentBookingSlot> timeSlots = FSL.AppointmentBookingService.GetSlots(
                     serviceAppointmentId,
                     schedulingPolicyId,
                     operatingHoursId,
@@ -178,7 +178,7 @@ public without sharing class AppointmentController {
 
                                     
 
-
+                
 
 
                 slotsList.put('list', timeSlots);
@@ -188,7 +188,7 @@ public without sharing class AppointmentController {
                     System.debug('Time slots are : '+timeSlots[i].Interval.Start+'#'+ timeSlots[i].Interval.Finish);
                     timeSlotRange.add(timeSlots[i].Interval.Start+'#'+ timeSlots[i].Interval.Finish+'#'+timeSlots[i].Grade);
                 }
-                slotsList.put('timeSlotList', timeSlotRange);
+                slotsList.put('timeSlotList', timeSlotRange);     
             }
             else {
                 slotsList.put('error', 'Invalid SA ID or token expired');
@@ -209,7 +209,9 @@ public without sharing class AppointmentController {
         Boolean arrivalWindowFlag,
         Id userId,
         String currentAssignmentMethod,
-        Boolean cleanupRequired
+        Boolean cleanupRequired,
+        Integer selectedHorizonValue, 
+        Datetime startPermitDate
     ){
         try {
 
@@ -218,15 +220,16 @@ public without sharing class AppointmentController {
             }
             else if(currentAssignmentMethod == 'assignToAnyAvailable' && cleanupRequired == true){
                 //Cleanup previous required resource prefernces modifications created to enable assign to me
-                String workorderId = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
-                deleteExistingRequiredResources(workorderId);
+                String workOrderId = [SELECT Id, ParentRecordId from ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
+
+                deleteExistingRequiredResources(workOrderId);
             }
             else{
                 System.Debug('Error in getSlotsByAssignmentMethod::: Unfamiliar assignment method'  );
             }
 
              return getSlots(serviceAppointmentId, operatingHoursId, schedulingPolicyId, arrivalWindowFlag);
-
+        
         } catch (Exception e) {
             throw new AuraHandledException('Error in getSlotsByAssignmentMethod:::' + e.getMessage());
         }
@@ -234,25 +237,31 @@ public without sharing class AppointmentController {
 
 
     @AuraEnabled()
-    public static Map<String, String> scheduleSA(String serviceAppointmentId, String schedulingPolicyId) {
+    public static Map<String, String> scheduleSA(String serviceAppointmentId, String schedulingPolicyId, String userId, String dummySA) {
         //  CALL to instrumentation api
         //  InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - updateSASlot()');
-
+        
         Map<String, String> updateStatusArray = new Map<String, String>();
 
             try {
+
+                assignCurrentUserAsRequiredResource(userId, serviceAppointmentId);
+
                 System.debug('Service appointment is  : '+serviceAppointmentId);
                 FSL.ScheduleResult myResult = new FSL.ScheduleResult();
 
                 myResult = FSL.ScheduleService.schedule(schedulingPolicyId , serviceAppointmentId);
                 System.debug('FSL api result is : '+myResult);
-                updateStatusArray.put('success', 'Appointment Updated');
+                updateStatusArray.put('success', 'Appointment Updated::: schedulingpolicy ' + schedulingPolicyId);
+                
+                return updateStatusArray;
 
             } catch (Exception e) {
                 updateStatusArray.put('error', ''+e);
+                return updateStatusArray;
             }
         
-        return updateStatusArray;
+        
     }
 
     @AuraEnabled()
@@ -396,7 +405,7 @@ public without sharing class AppointmentController {
             String serviceResourceId = [SELECT Id from ServiceResource WHERE RelatedRecordId =: userId][0]?.Id;
             String workOrderId = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
 
-            if(workOrderId != null){
+            if(workOrderId != null && serviceResourceId != null){
 
                 deleteExistingRequiredResources(workOrderId);
                 deleteExistingResourcePreferencesForResource(workOrderId, serviceResourceId);
@@ -449,5 +458,238 @@ public without sharing class AppointmentController {
         }
 
         return false;
+    }
+
+    @AuraEnabled
+    public static Map<String,String> cloneWorkOrder(String originalSaId, Integer selectedHorizonValue, Datetime startPermitDate, String dummySA,
+    String dummyWO){
+        Map<String,String> results = new MAP<String,String>();
+        try {
+            
+            ServiceAppointment originalSa = [SELECT Id,
+                                            WorkTypeId,
+                                            EarliestStartTime,
+                                            ArrivalWindowStartTime,
+                                            ArrivalWindowEndTime,
+                                            SchedStartTime,
+                                            SchedEndTime,
+                                            DueDate,
+                                            ServiceTerritoryId,
+                                            Address,
+                                            ParentRecordId 
+                                        FROM ServiceAppointment
+                                        WHERE ID =: originalSaId
+                                        ][0];
+            String originalWOId = originalSa.ParentRecordId;
+            DateTime dueDate = startPermitDate + selectedHorizonValue;
+            Address address = originalSa.Address;
+
+            if(dummySA != null ) {
+
+                updateDummySa(dummySA, startPermitDate, dueDate, originalSa.ServiceTerritoryId);
+                
+            }else{
+
+                String newWOId = createNewDummyWorkOrder(originalSa.ServiceTerritoryId, originalSa.WorkTypeId, originalWOId );
+                ServiceAppointment sa = [SELECT Id FROM ServiceAppointment where ParentRecordId =: newWOId][0];
+
+                updateDummySa(sa.Id, startPermitDate, dueDate, originalSa.ServiceTerritoryId);
+                
+                //Clone resource preference list
+                String workOrderId = [SELECT Id, ParentRecordId from ServiceAppointment WHERE Id =: originalSAId][0]?.ParentRecordId;
+                System.debug('cloning resource refernce :::' + workOrderId + newWOId); 
+                cloneResourcePreference(workOrderId, newWOId);
+
+
+                System.debug('Returning cloned results:::' + sa.Id + newWOId);
+                results.put('said', sa.Id);
+                results.put('woid', newWOId);
+
+               
+            }
+            
+            return results;
+
+        }catch (Exception e) {
+            results.put('error in clone work order:::' , e.getMessage() + e.getLineNumber() );
+            return results;
+            //throw new AuraHandledException(e.getMessage());
+        }
+    
+    }
+
+    @AuraEnabled
+    public static string deleteClonedResourcePreference(String clonedEorkOrderId){
+        try {
+            List<ResourcePreference> resourcePreferenceList = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE RelatedRecordId =: clonedEorkOrderId];
+
+            if(!resourcePreferenceList.isEmpty()){
+                delete resourcePreferenceList;
+            }
+
+            return clonedEorkOrderId;
+
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static string deleteClonedWorkOrder(String clonedEorkOrderId){
+        try {
+            workOrder workOrder = [SELECT Id FROM WorkOrder WHERE Id =: clonedEorkOrderId][0];
+
+            if(workOrder != null){
+                delete workOrder;
+
+                System.debug('Deleted ClonedWorkOrder::: ' + workOrder.Id);
+                return workOrder.Id;
+            }
+            else{
+                return '';
+            }
+
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static string cloneResourcePreference(String workOrderId, String newWOId){
+        try {
+            
+            List<ResourcePreference> resourcePreferenceList = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE RelatedRecordId =: workOrderId];
+
+            if(!resourcePreferenceList.isEmpty()){
+                //copy list
+                 for (ResourcePreference tech : resourcePreferenceList){
+                    copyResourcePreferenceObject(tech, newWOId);
+                 }
+            }
+           
+            return newWOId;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static void copyResourcePreferenceObject(ResourcePreference originalRFObj, String newWO){
+        try {
+
+            ResourcePreference RFCopy = new ResourcePreference(
+                        PreferenceType= originalRFObj.PreferenceType,
+                        RelatedRecordId = newWO,
+                        ServiceResourceId = originalRFObj.serviceResourceId
+                        );
+            insert RFCopy;
+
+
+        } catch (Exception e) {
+            throw new AuraHandledException('Error in copyResourcePreferenceObject::: ' + newWO + ' ' + originalRFObj.serviceResourceId + e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static Map<String,String> deleteClonedAppointmentData(String clonedServiceAppointmentId){
+        Map<String,String> result = new Map<String,String>();
+        try {
+           
+            ServiceAppointment sa = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE ID =: clonedServiceAppointmentId][0];
+  
+            if(sa != null){
+                String woid = sa.ParentRecordId;
+                WorkOrder wo = [SELECT Id FROM WorkOrder WHERE Id =: woid][0];
+
+                delete sa;
+
+                if(wo != null && String.isNotEmpty(woid)){
+                    //delete after
+                     List<ResourcePreference> resourcePreferenceList = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE RelatedRecordId =: woid];
+                    if(resourcePreferenceList != null){
+                        delete resourcePreferenceList;
+                                         
+                    }
+                    delete wo;
+                }
+                
+                
+
+                result.put('success', 'clonedServiceAppointmentId');
+                
+            }
+            
+            return result;
+        } catch (Exception e) {
+            result.put('error', e.getMessage());
+            return result;
+        }
+    }
+
+    
+    @AuraEnabled
+    public static Map<String, String> updateDummySa(String dummySA, DateTime startPermitDate, DateTime dueDate, String serviceTerritoryId){
+        try {
+            Map<String,String> results = new Map<String,String>();
+
+            ServiceAppointment sa = [SELECT Id, ServiceTerritoryId FROM ServiceAppointment where Id =: dummySA][0];
+                if(sa != null) {
+                    sa.EarliestStartTime = startPermitDate;
+                    sa.DueDate = dueDate;
+
+                    if(String.isNotEmpty(serviceTerritoryId)){
+                        sa.ServiceTerritoryId = serviceTerritoryId;
+                    }
+
+                    update sa;
+
+                    
+                    results.put('said', sa.Id);
+
+                    System.debug('updated earliest start time for existing dummySa :::' + sa.Id);
+                }
+                else{
+                    results.put('error', 'Could not find dummySa');
+
+                }
+
+                return results;
+
+        } catch (Exception e) {
+            Map<String,String> results = new Map<String,String>();
+            results.put('error', e.getMessage() + e.getLineNumber());
+            return results;
+        }
+    }
+
+    
+    @AuraEnabled
+    public static string createNewDummyWorkOrder(String serviceTerritoryId, String workTypeId, String originalWOId){
+        try {            
+                WorkOrder newWO = new WorkOrder();
+                newWO.WorkTypeId = workTypeId;
+                Address originalAddress = [SELECT Address from WorkOrder WHERE Id =: originalWOId][0]?.Address;
+
+                if(String.IsEmpty(ServiceTerritoryId) && originalAddress != null){
+                        if(originalAddress.Latitude != null && originalAddress.Longitude != null){
+                            newWO.Longitude = originalAddress.Longitude;
+                            newWO.Latitude = originalAddress.Latitude;
+                        }
+                        else{
+                            newWO.Street = originalAddress.Street;
+                            newWO.City = originalAddress.City;
+                            newWO.State = originalAddress.State;
+                            newWO.Country = originalAddress.Country;
+                            newWO.PostalCode = originalAddress.PostalCode;
+                        }
+                }
+
+                insert newWo;
+
+                return newWo.Id;
+                
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 }

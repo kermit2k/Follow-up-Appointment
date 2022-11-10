@@ -11,11 +11,15 @@ import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import {calculateMaxValidHorizonDate} from 'c/utils';
+import getUserName from '@salesforce/apex/AppointmentController.getUserName';
 
 //TODO takes from labels
 const ALL_APPOINTMENTS_TITLE = 'All Available Appointments';
 const RECOMMENDED_APPOINTMENTS_TITLE = 'Recommended Appointments';
-
+const assignmentMethod = {
+    ASSIGN_TO_ME: "assignToMe",
+    ASSIGN_TO_ANY_AVIALABLE: "assignToAnyAvailable"
+}
 export default class SchedulingContainer extends LightningElement {
     guestToken;
     schedulePolicyId;
@@ -54,7 +58,9 @@ export default class SchedulingContainer extends LightningElement {
     @api noOfDaysBeforeAfterWeek;
     @api showExactArrivalTime;
     @api worktypeDisplayname;
-    @api currentAssignmentMethod;
+    _currentAssignmentMethod;
+    assignToName;
+    @api userName;
     
     //backButtonTitle = this.LABELS.Appointment_ReBooking_back_button_title;
     //backButtonTitleNoSlot = this.LABELS.Appointment_ReBooking_back_button_title_no_slot;
@@ -64,6 +70,7 @@ export default class SchedulingContainer extends LightningElement {
     @api allAppointmentsTitle = ALL_APPOINTMENTS_TITLE;
     @api recommendedAppointmentsTitle = RECOMMENDED_APPOINTMENTS_TITLE;
     timeSlotObjectFilteredByGrades;
+    @api userId;
 
     @api get serviceappointmentobject(){
         return this.serviceAppointmentObject;
@@ -183,6 +190,18 @@ export default class SchedulingContainer extends LightningElement {
 
     set recommendedScore(value) {
        this._recommendedScore = value;
+    }
+    @api
+    get currentAssignmentMethod() {
+        return this._currentAssignmentMethod;
+    }
+
+    set currentAssignmentMethod(value) {
+       this._currentAssignmentMethod = value;
+       
+       if(this.userName){//if we already got the name from apex
+        this.setAssigNameByAssignMethod();
+       }
     }
 
 
@@ -332,6 +351,31 @@ export default class SchedulingContainer extends LightningElement {
             let splittedElement = element.split('#');
             let grade = splittedElement[2];
             return grade >= score;
+        }
+    }
+
+    @wire(getUserName, { userId: '$userId' })
+    wireUserName({ error, data }) {
+        if (data) {
+            this.userName = data;
+            this.error = undefined;
+            console.log("UserName from getUserName :" + data);
+
+            this.setAssigNameByAssignMethod();
+
+        } else if (error) {
+            console.log("error in getUserName: " + JSON.stringify(error));
+
+        }
+    }
+
+    setAssigNameByAssignMethod(){
+        if(this._currentAssignmentMethod == assignmentMethod.ASSIGN_TO_ME){
+            //"Assigned to You (userName)"
+            this.assignToName = this.LABELS.Appointment_ReBooking_assigned_to_you.replace('{0}' , this.userName);
+        }
+        else{
+            this.assignToName = this.LABELS.Appointment_ReBooking_assigned_to_any_available_worker;
         }
     }
 

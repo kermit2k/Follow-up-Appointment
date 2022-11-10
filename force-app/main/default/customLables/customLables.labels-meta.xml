@@ -382,4 +382,20 @@
         <shortDescription>confirmation page section title</shortDescription>
         <value>SERVICE TYPE</value>
     </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_assigned_to_you</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Assigned to You ({userName})</shortDescription>
+        <value>Assigned to You ({0})</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_assigned_to_any_available_worker</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Assigned to any available worker</shortDescription>
+        <value>Assigned to any available worker</value>
+    </labels>
 </CustomLabels>

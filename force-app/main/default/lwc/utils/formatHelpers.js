@@ -48,5 +48,13 @@ const getFormattedTime = (date) => {
     return hours + ':' + minutes + " " + ampm;
 }
 
+const convertDateUTCtoLocal = (date) => {
+    if(date && date !== 'null') {
+      return new Date((date.replace(/ /g,"T") + '.000Z'));
+    } else {
+      return '';
+    }
+}
 
-export{ formatAppointmentDateandHourRange};
+
+export{ formatAppointmentDateandHourRange, convertDateUTCtoLocal};

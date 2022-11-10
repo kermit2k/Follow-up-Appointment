@@ -9,6 +9,7 @@ import scheduleSA from '@salesforce/apex/AppointmentController.scheduleSA';
 import updateSASlot from '@salesforce/apex/AppointmentController.updateSASlot';
 import cloneWorkOrder from '@salesforce/apex/AppointmentController.cloneWorkOrder';
 import deleteClonedAppointmentData from '@salesforce/apex/AppointmentController.deleteClonedAppointmentData';
+import isUserExcludedResource from '@salesforce/apex/AppointmentController.isUserExcludedResource';
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c/utils';
@@ -69,8 +70,13 @@ export default class Landing extends LightningElement {
         this._currentAssignmentMethod = value;
     }
 
+    @api get showAssignmentMethodToggle(){
+        return this.enableAssignToMe && this.enableAssignToEveryAvailable;
+    }   
+
     @api enableAssignToMe;
     @api enableAssignToEveryAvailable;
+    @api isExcluded;
 
     //proprs from rebooking main
     serviceTerritoryTimeZone;
@@ -109,6 +115,7 @@ export default class Landing extends LightningElement {
         this.template.addEventListener('closemodal', this.closeModal);
         this.template.addEventListener('openmodal', this.openModal); 
         this.template.addEventListener('onassignmentmethodchanged', this.handleCurrentAssignmentMethodChange);      
+        this.isExcluded = false;
 
     }
 
@@ -116,10 +123,12 @@ export default class Landing extends LightningElement {
 
         console.log("connected before assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
         this._previousServiceAppointmentId = this.serviceAppointmentId;
-        console.log("connected after assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
+        console.log("connected after assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);    
         this.calcAssignmentMethod();
         this.dataLoaded = false;
         this.getInitData();
+        this.getIsExcludedInfo();
+        
     }
 
     renderedCallback(){
@@ -519,13 +528,20 @@ export default class Landing extends LightningElement {
                                     console.log("this.endWith" + this.endWith);
                                 }
                             }).catch(error=>{
-                                
+
+                                if(this.dummySAid){
+                                    this.deleteDummySa(this.dummySAid);
+                                }
                                 this.dummySAid =null;
                                 this.dummyWO = null;
                                 this.showDataSpinner = false;
                                 console.log('getSlotAsPerStartDate errror is :', + error);
                                 this.timeSlotDateWise = [];
                                 this.showDataSpinner = false;
+                            }).finally(()=>{
+                                if(this.dummySAid){
+                                    this.deleteDummySa(this.dummySAid);
+                                }
                             })
                         
                         
@@ -604,7 +620,7 @@ export default class Landing extends LightningElement {
                             serviceAppointmentId: this.serviceAppointmentId,
                             schedulingPolicyId: this.schedulingPolicyId,
                             userId: this.userId,
-                            dummySA: this.dummySAid})
+                            currentAssignmentMethod: this.currentAssignmentMethod})
                         .then((data) => {
                             if(data.error) {
                                 this.showSpinnerInChildClass = false;
@@ -1061,7 +1077,7 @@ export default class Landing extends LightningElement {
         //clear cash of slots? and get new slots
         this.clearSlots();
         
-        this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
+        this.handleGetSlotQueryForSelectedDateRangeClonedSA(firstDateOfWeek);
 
     }
 
@@ -1083,6 +1099,21 @@ export default class Landing extends LightningElement {
         })
         .catch((error) => {
             console.log('There was a problem deleting the SA' + JSON.stringify(error));
+        });
+    }
+
+    getIsExcludedInfo(){
+        
+        isUserExcludedResource({userId: this.userId, serviceAppointmentId: this.serviceAppointmentId})
+        .then((data)=> {
+            if(data.success){
+                this.isExcluded = data.success;
+            }else{
+                this.isExcluded = false;
+            }
+            
+        }).catch((e)=>{
+            this.isExcluded = false;
         });
     }
 

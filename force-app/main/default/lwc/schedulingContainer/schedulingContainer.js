@@ -58,9 +58,12 @@ export default class SchedulingContainer extends LightningElement {
     _currentAssignmentMethod;
     assignToName;
     @api userName;
-    
+    @api showAssignmentMethodToggle;
+    @api isExcluded;
+
     //backButtonTitle = this.LABELS.Appointment_ReBooking_back_button_title;
     //backButtonTitleNoSlot = this.LABELS.Appointment_ReBooking_back_button_title_no_slot;
+
 
     show_confirmBtnLayout = false;
     _recommendedScore;

@@ -237,7 +237,7 @@ public without sharing class AppointmentController {
 
 
     @AuraEnabled()
-    public static Map<String, String> scheduleSA(String serviceAppointmentId, String schedulingPolicyId, String userId, String dummySA) {
+    public static Map<String, String> scheduleSA(String serviceAppointmentId, String schedulingPolicyId, String userId, String currentAssignmentMethod) {
         //  CALL to instrumentation api
         //  InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - updateSASlot()');
         
@@ -245,7 +245,10 @@ public without sharing class AppointmentController {
 
             try {
 
-                assignCurrentUserAsRequiredResource(userId, serviceAppointmentId);
+                if(currentAssignmentMethod == 'assignToMe'){
+                    assignCurrentUserAsRequiredResource(userId, serviceAppointmentId);
+                }
+                
 
                 System.debug('Service appointment is  : '+serviceAppointmentId);
                 FSL.ScheduleResult myResult = new FSL.ScheduleResult();
@@ -439,25 +442,35 @@ public without sharing class AppointmentController {
     }
 
     @AuraEnabled
-    public static Boolean isUserExcludedResource(String userId, String serviceAppointmentId){
+    public static Map<String,Boolean> isUserExcludedResource(String userId, String serviceAppointmentId){
+        Map<String,Boolean> results = new Map<String,Boolean>();
+
         try {
         
             String serviceResourceId = [SELECT Id from ServiceResource WHERE RelatedRecordId =: userId][0]?.Id;
             String workOrderId = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
 
-           List<ResourcePreference> resourcePreference = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE ServiceResourceId =: serviceResourceId AND RelatedRecordId =: workOrderId];
-            if(!resourcePreference.isEmpty()){
-                resourcePreference tech = resourcePreference[0];
-                if((String)tech.get('PreferenceType') != null && (String)tech.get('PreferenceType') == 'Excluded'){
-                    return true;
+            if(serviceResourceId != null && workOrderId != null){
+                List<ResourcePreference> resourcePreference = [SELECT Id, PreferenceType, RelatedRecordId, ServiceResourceId FROM ResourcePreference WHERE ServiceResourceId =: serviceResourceId AND RelatedRecordId =: workOrderId];
+                if(!resourcePreference.isEmpty()){
+                    resourcePreference tech = resourcePreference[0];
+                    if((String)tech.get('PreferenceType') != null && (String)tech.get('PreferenceType') == 'Excluded'){
+                        results.put('success', true);
+                    }
+                    else{
+                        results.put('success', false);
+                    }
                 }
-                
+            }else{
+                results.put('error', false);
             }
+
+           
         } catch (Exception e) {
-            throw new AuraHandledException('Error in isUserExcludedResource:::' + e.getMessage());
+             throw new AuraHandledException('Error in isUserExcludedResource:::' + e.getMessage() + ', ' + e.getLineNumber());
         }
 
-        return false;
+        return results;
     }
 
     @AuraEnabled

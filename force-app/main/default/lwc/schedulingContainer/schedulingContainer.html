@@ -8,16 +8,19 @@
             nonavailabledates = {nonAvailableDateArray} >
         </c-aa-rebooking-calendar>
     </div>
-    <div>
-        <c-resource-assignment
-        current-assignment-method={currentAssignmentMethod}
-        user-name={userName}
-        selecteddate={selectedDate}        
-        >
-
-        </c-resource-assignment>
-    </div>
-
+    <template if:true={showAssignmentMethodToggle}>
+        <div>
+            <c-resource-assignment
+            current-assignment-method={currentAssignmentMethod}
+            user-name={userName}
+            selecteddate={selectedDate}
+            is-excluded={isExcluded}
+            >
+    
+            </c-resource-assignment>
+        </div>
+    </template>
+    
     <!--recommended slots-->
     <template if:true={timeSlotObjectFilteredByGrades}>
         <c-slots-container

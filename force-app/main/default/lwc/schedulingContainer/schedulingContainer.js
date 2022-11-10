@@ -54,6 +54,7 @@ export default class SchedulingContainer extends LightningElement {
     @api noOfDaysBeforeAfterWeek;
     @api showExactArrivalTime;
     @api worktypeDisplayname;
+    @api currentAssignmentMethod;
     
     //backButtonTitle = this.LABELS.Appointment_ReBooking_back_button_title;
     //backButtonTitleNoSlot = this.LABELS.Appointment_ReBooking_back_button_title_no_slot;

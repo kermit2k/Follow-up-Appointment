@@ -8,6 +8,15 @@
             nonavailabledates = {nonAvailableDateArray} >
         </c-aa-rebooking-calendar>
     </div>
+    <div>
+        <c-resource-assignment
+        current-assignment-method={currentAssignmentMethod}
+        user-name="Mob"
+        selecteddate={selectedDate}        
+        >
+
+        </c-resource-assignment>
+    </div>
 
     <!--recommended slots-->
     <template if:true={timeSlotObjectFilteredByGrades}>

@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import customLabels from './labels';
-import {formatAppointmentDateandHourRange} from 'c/utils';
+import {formatAppointmentDateandHourRange, convertDateUTCtoLocal} from 'c/utils';
 
 export default class CompactAppointmentInfo extends LightningElement {
     LABELS = customLabels;
@@ -33,11 +33,19 @@ export default class CompactAppointmentInfo extends LightningElement {
 
         if(this.serviceAppointmentObject && this.isNotNullOrUndefined(this.serviceAppointmentObject['ArrivalWindowStartTime'])
         && this.isNotNullOrUndefined(this.serviceAppointmentObject['ArrivalWindowEndTime'])){
-            dateTimeStr = formatAppointmentDateandHourRange(this.serviceAppointmentObject['ArrivalWindowStartTime'], this.serviceAppointmentObject['ArrivalWindowEndTime']);
+            
+            let startDate = convertDateUTCtoLocal(this.serviceAppointmentObject['ArrivalWindowStartTime']);
+            let endDate = convertDateUTCtoLocal(this.serviceAppointmentObject['ArrivalWindowEndTime']);
+
+            dateTimeStr = formatAppointmentDateandHourRange(startDate, endDate);
         }
         else if (this.serviceAppointmentObject && this.isNotNullOrUndefined(this.serviceAppointmentObject['SchedStartTime'])
         && this.isNotNullOrUndefined(this.serviceAppointmentObject['SchedEndTime'])){
-            dateTimeStr = formatAppointmentDateandHourRange(this.serviceAppointmentObject['SchedStartTime'], this.serviceAppointmentObject['SchedEndTime']);
+
+            let startDate = convertDateUTCtoLocal(this.serviceAppointmentObject['SchedStartTime']);
+            let endDate = convertDateUTCtoLocal(this.serviceAppointmentObject['SchedEndTime']);
+
+            dateTimeStr = formatAppointmentDateandHourRange(startDate, endDate);
         }
 
         else{
@@ -101,7 +109,7 @@ export default class CompactAppointmentInfo extends LightningElement {
 
     }
 
-  
+    
 
     
 

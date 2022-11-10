@@ -11,7 +11,7 @@
     <div>
         <c-resource-assignment
         current-assignment-method={currentAssignmentMethod}
-        user-name="Mob"
+        user-name={userName}
         selecteddate={selectedDate}        
         >
 
@@ -67,7 +67,7 @@
                         <div class="headlineDate">{newAppointmentDate}</div>
                         <div class="headlineDate">{newAppointmentTime}</div>
                         <!--TODO - get the assigned to-->
-                        <div class="modal-assign-to">Assigned to any available worker </div>
+                        <div class="modal-assign-to">{assignToName} </div>
                     </div>
 
                     <div class="modal-footer">

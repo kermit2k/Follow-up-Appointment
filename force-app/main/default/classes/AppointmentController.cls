@@ -690,6 +690,17 @@ public without sharing class AppointmentController {
                 
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
-        }
+        }      
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static String getUserName (String userId){
+
+        ServiceResource sr = [SELECT RelatedRecordId, Name
+        FROM ServiceResource
+        WHERE RelatedRecordId =: userId
+       ][0];
+        
+        return sr.Name;
     }
 }

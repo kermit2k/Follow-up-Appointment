@@ -7,6 +7,8 @@ import getSlotsByAssignmentMethod from '@salesforce/apex/AppointmentController.g
 import updateSA from '@salesforce/apex/AppointmentController.updateSA';
 import scheduleSA from '@salesforce/apex/AppointmentController.scheduleSA';
 import updateSASlot from '@salesforce/apex/AppointmentController.updateSASlot';
+import cloneWorkOrder from '@salesforce/apex/AppointmentController.cloneWorkOrder';
+import deleteClonedAppointmentData from '@salesforce/apex/AppointmentController.deleteClonedAppointmentData';
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c/utils';
@@ -39,6 +41,8 @@ export default class Landing extends LightningElement {
     @track selectedDate;
     @api recommendedScore;
     @api userId;
+    dummySAid;
+    dummyWO;
     @api get maxValidCalendarDate(){
         return this._maxValidCalendarDate;
     };
@@ -77,7 +81,7 @@ export default class Landing extends LightningElement {
     dateArrayForQuery = [];
     //@api serviceAppointmentObject;
     //@api serviceResourceObject;
-    @api timeSlotDateWise;
+    @track timeSlotDateWise;
     timeSlotWiseTemp=[];
     selectedSlotStringForToast = "";
 
@@ -103,11 +107,13 @@ export default class Landing extends LightningElement {
     constructor() {
         super();
         this.template.addEventListener('closemodal', this.closeModal);
-        this.template.addEventListener('openmodal', this.openModal);       
+        this.template.addEventListener('openmodal', this.openModal); 
+        this.template.addEventListener('onassignmentmethodchanged', this.handleCurrentAssignmentMethodChange);      
 
     }
 
     connectedCallback(){
+
         console.log("connected before assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
         this._previousServiceAppointmentId = this.serviceAppointmentId;
         console.log("connected after assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
@@ -391,6 +397,10 @@ export default class Landing extends LightningElement {
         this.dateArrayForQuery = Array.from(new Set(this.dateArrayForQuery));
     }
 
+    removeDatesFromCashArray(){
+        this.dateArrayForQuery = [];
+    }
+
     showAlertWithError(errorMessage) {
         alert(errorMessage);
     }
@@ -398,12 +408,12 @@ export default class Landing extends LightningElement {
     handleGetSlotQueryForSelectedDate(event) {
         var firstDateOfWeek = this.getFirstDayOfWeek(event.detail.selectedDate);
         if(this.dataLoaded){
-            this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
+            this.handleGetSlotQueryForSelectedDateRangeClonedSA(firstDateOfWeek);
         }
         
     }
 
-    handleGetSlotQueryForSelectedDateRange(selectedDate) {
+    handleGetSlotQueryForSelectedDateRangeClonedSA(selectedDate) {
         this.startWith = performance.now();
         console.log("this.startWith" + this.startWith);
         var firstDateOfWeek = selectedDate;
@@ -434,85 +444,94 @@ export default class Landing extends LightningElement {
                 
                 console.log("Run appointment query for  date "+loopdate);
 
-                
-                updateSA({serviceAppointmentId: this.serviceAppointmentId, earliestStartDate: loopdate,
-                    arrivalStartDate: null, arrivalEndDate: null })
+                cloneWorkOrder({
+                    originalSaId: this.serviceAppointmentId,
+                    selectedHorizonValue: this.sechedulingHorizonValue, 
+                    startPermitDate: loopdate, 
+                    dummySA: this.dummySAid,
+                    dummyWO: this.dummyWO })
                 .then((saData) => {
-                    if(saData.success) {
-                    
+                    if(saData.said) {
+
+                        this.dummySAid = saData.said;
+                        this.dummyWO = saData.woid;
+                        console.log('clone sa method finished::: said' + this.dummySAid + 'wo: ' + this.dummyWO);
                         //console.log("Run appointment query for  date "+loopdate);
-
-                        getSlotsByAssignmentMethod({serviceAppointmentId: this.serviceAppointmentId,
-                            operatingHoursId: this.operatingHoursId,
-                            schedulingPolicyId: this.schedulingPolicyId,
-                            arrivalWindowFlag: this.showExactArrivalTime, 
-                            userId: this.userId, 
-                            currentAssignmentMethod: this.currentAssignmentMethod,
-                            cleanupRequired: this.isCleanupRequired })
-                        .then((data) => {
-
-                            this.revertSA();
-                            
-                            if(data.error) {
-                                console.log('Error in getting slots : '+data.error);
-                                this.showAlertWithError(this.LABELS.AppointmentAssistance_confirmation_failure_message);
-                                this.timeSlotDateWise = [];
-                            } else {
-                                this.timeSlotWiseTemp = data.timeSlotList;
-                                this.timeSlotDateWise = this.timeSlotWiseTemp;
-                                var lastDateOfSlot = this.getLastSlotFromTheArray(this.timeSlotWiseTemp);
-                                
-                                // if last date of the slot is not null
-            
-                                //Erez - I think you can avoid the if/else and do lastDateOfSlot != null?lastDateOfSlot:lastDateOfWeek+1
-                                if(lastDateOfSlot) {
-                                    console.log("Date in the Array is : last date is  "+lastDateOfSlot);
-                                    this.addDatesToCashArray(new Date(loopdate), new Date(lastDateOfSlot));
-                                    if(lastDateOfSlot >= lastDateOfWeek) {
+                            getSlotsByAssignmentMethod({serviceAppointmentId: saData.said,
+                                operatingHoursId: this.operatingHoursId,
+                                schedulingPolicyId: this.schedulingPolicyId,
+                                arrivalWindowFlag: this.showExactArrivalTime,
+                                userId: this.userId,
+                                currentAssignmentMethod: this.currentAssignmentMethod,
+                                cleanupRequired: this.isCleanupRequired
+                                })
+                            .then((data) => {
+                                if(data.error) {
+                                    console.log('Error in getting slots : '+data.error);
+                                    this.showAlertWithError(this.LABELS.AppointmentAssistance_confirmation_failure_message);
+                                    this.timeSlotDateWise = [];
+                                    this.dummySAid =null;
+                                    this.dummyWO = null;
+                                } else {
+                                    this.timeSlotWiseTemp = data.timeSlotList;
+                                    this.timeSlotDateWise = this.timeSlotWiseTemp;
+                                    var lastDateOfSlot = this.getLastSlotFromTheArray(this.timeSlotWiseTemp);
+                                    
+                                    // if last date of the slot is not null
                 
-                                        this.showDataSpinner = false;
-                                        this.timeSlotDateWise = this.timeSlotWiseTemp;
-                                        
-                                    } else {
-            
-                                        if(loopdate < lastDateOfSlot) {
-                                            loopdate = lastDateOfSlot;
-                                        } 
-                                        var tempDate = loopdate.setDate(loopdate.getDate() + 1);
-                                        loopdate = new Date(tempDate);
-            
-                                        if(loopdate <= lastDateOfWeek) {
-                                            this.handleGetSlotQueryForSelectedDateRange(loopdate);
-                                        } else {
+                                    //Erez - I think you can avoid the if/else and do lastDateOfSlot != null?lastDateOfSlot:lastDateOfWeek+1
+                                    if(lastDateOfSlot) {
+                                        console.log("Date in the Array is : last date is  "+lastDateOfSlot);
+                                        this.addDatesToCashArray(new Date(loopdate), new Date(lastDateOfSlot));
+                                        if(lastDateOfSlot >= lastDateOfWeek) {
+                    
                                             this.showDataSpinner = false;
                                             this.timeSlotDateWise = this.timeSlotWiseTemp;
+                                            
+                                        } else {
+                
+                                            if(loopdate < lastDateOfSlot) {
+                                                loopdate = lastDateOfSlot;
+                                            } 
+                                            var tempDate = loopdate.setDate(loopdate.getDate() + 1);
+                                            loopdate = new Date(tempDate);
+                
+                                            if(loopdate <= lastDateOfWeek) {
+                                                this.handleGetSlotQueryForSelectedDateRangeClonedSA(loopdate);
+                                            } else {
+                                                this.showDataSpinner = false;
+                                                this.timeSlotDateWise = this.timeSlotWiseTemp;
+                                            }
                                         }
+                                    } else {            
+                                        // if last date of the slot is null, increase the date to one and run the query for next date
+                                        var tempDate = loopdate.setDate(loopdate.getDate() + 1);
+                                        loopdate = new Date(tempDate);
+                                        if(loopdate <= lastDateOfWeek) {
+                                            this.handleGetSlotQueryForSelectedDateRangeClonedSA(loopdate);
+                                        } else {
+                                            this.timeSlotDateWise = this.timeSlotWiseTemp;
+                                            this.showDataSpinner = false;
+                                        }
+    
                                     }
-                                } else {            
-                                    // if last date of the slot is null, increase the date to one and run the query for next date
-                                    var tempDate = loopdate.setDate(loopdate.getDate() + 1);
-                                    loopdate = new Date(tempDate);
-                                    if(loopdate <= lastDateOfWeek) {
-                                        this.handleGetSlotQueryForSelectedDateRange(loopdate);
-                                    } else {
-                                        this.timeSlotDateWise = this.timeSlotWiseTemp;
-                                        this.showDataSpinner = false;
-                                    }
-
+                                    this.endWith = performance.now();
+                                    console.log("this.endWith" + this.endWith);
                                 }
-                                this.endWith = performance.now();
-                                console.log("this.endWith" + this.endWith);
-                            }
-                        }).catch(error=>{
-                            // delete SA/WO incase transaction fails
-                            this.revertSA();
-                            this.showDataSpinner = false;
-                            console.log('getSlotAsPerStartDate errror is :', + error);
-                            this.timeSlotDateWise = [];
-                            this.showDataSpinner = false;
-                        })
+                            }).catch(error=>{
+                                
+                                this.dummySAid =null;
+                                this.dummyWO = null;
+                                this.showDataSpinner = false;
+                                console.log('getSlotAsPerStartDate errror is :', + error);
+                                this.timeSlotDateWise = [];
+                                this.showDataSpinner = false;
+                            })
+                        
+                        
                     }
-                    if(saData.error) {
+                    
+                    else if(saData.error) {
                         this.showDataSpinner = false;
                         console.log('getSlotAsPerStartDate errror is :', + error);
                         this.timeSlotDateWise = [];
@@ -531,7 +550,7 @@ export default class Landing extends LightningElement {
                 var tempDate = loopdate.setDate(loopdate.getDate() + 1);
                 loopdate = new Date(tempDate);
                 if(loopdate <= lastDateOfWeek) {
-                    this.handleGetSlotQueryForSelectedDateRange(loopdate);
+                    this.handleGetSlotQueryForSelectedDateRangeClonedSA(loopdate);
                 } else {
                     this.timeSlotDateWise = this.timeSlotWiseTemp;
                     this.showDataSpinner = false;
@@ -544,7 +563,7 @@ export default class Landing extends LightningElement {
             loopdate = new Date(tempDate);
 
             if(loopdate <= lastDateOfWeek) {
-                this.handleGetSlotQueryForSelectedDateRange(loopdate);
+                this.handleGetSlotQueryForSelectedDateRangeClonedSA(loopdate);
             } else {
                 this.timeSlotDateWise = [];
             }
@@ -552,7 +571,8 @@ export default class Landing extends LightningElement {
         }
     }
 
-    onServiceAppointmentUpdate(event) {
+
+    onServiceAppointmentUpdate = (event) => {
         let selectedSlotStart = event.detail.selectedSlotStart;
         let selectedSlotEnd = event.detail.selectedSlotEnd;
         this.selectedSlotStringForToast = formatAppointmentDateandHourRange(selectedSlotStart, selectedSlotEnd);
@@ -580,10 +600,13 @@ export default class Landing extends LightningElement {
                         console.log(this.LABELS.Appointment_ReBooking_toastMessage_reschedule_appointment_fail_message +"  "+ data.error);
                     } else {
                         // If the transaction Success, run the FSL schedule service
-                        scheduleSA({serviceAppointmentId: this.serviceAppointmentId, schedulePolicy: this.schedulingPolicyId})
+                        scheduleSA({
+                            serviceAppointmentId: this.serviceAppointmentId,
+                            schedulingPolicyId: this.schedulingPolicyId,
+                            userId: this.userId,
+                            dummySA: this.dummySAid})
                         .then((data) => {
                             if(data.error) {
-                                this.revertSA();
                                 this.showSpinnerInChildClass = false;
                                 this.showToast = true;
                                 this.toastVariant = "warning";
@@ -615,7 +638,10 @@ export default class Landing extends LightningElement {
                             });
                             this.dispatchEvent(toastEventError);*/
                             console.log( "Error while executing FSL API : " +"  "+ error);
-                        })
+                        }).finally(() => {
+                            this.deleteDummySa(this.dummySAid);
+                           
+                        });
                     }
                     
                 }).catch(error => {
@@ -1022,4 +1048,43 @@ export default class Landing extends LightningElement {
             }
         }
     }
+
+    handleCurrentAssignmentMethodChange = (event) => {
+        const updatedValue = event.detail.assignmentMethod;
+        const selectedDate = event.detail.selecteddate;
+        
+        this.currentAssignmentMethod = assignmentMethod[updatedValue];
+
+        //dispatch get Slots
+        let firstDateOfWeek = this.getFirstDayOfWeek(selectedDate);
+
+        //clear cash of slots? and get new slots
+        this.clearSlots();
+        
+        this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
+
+    }
+
+    clearSlots(){
+        
+        this.timeSlotDateWise = [];
+        this.timeSlotWiseTemp = [];
+        this.removeDatesFromCashArray();
+    }
+
+    deleteDummySa(dummySaId){
+        deleteClonedAppointmentData({clonedServiceAppointmentId: dummySaId})
+        .then((data)=> {
+            console.log("after deleting cloned info :::");
+            if(data.success){
+                this.dummySAid  = null;
+                this.dummyWO = null;
+            }                               
+        })
+        .catch((error) => {
+            console.log('There was a problem deleting the SA' + JSON.stringify(error));
+        });
+    }
+
+    
 }

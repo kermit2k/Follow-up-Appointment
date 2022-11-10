@@ -14,7 +14,7 @@ export default class SettingsContainer extends LightningElement {
     //@api serviceAppointmentId;
     userId = Id;
     @api operatingHoursId = "0OH7e000000Cj5iGAC";
-    @api schedulingPolicyId ="a0Z7e00000MImdzEAD";
+    @api schedulingPolicyId ="a0Z7e00000MImdzEAD"; 
     @api arrivalWindowMethod = "Arrival Windows";
     @api schedulingHorizonUnit = "Days";
     @api sechedulingHorizonValue = "20";
@@ -47,8 +47,8 @@ export default class SettingsContainer extends LightningElement {
 
     connectedCallback(){
         
-        this.enableAssignToMe = true;
-        this.enableAssignToEveryAvailable = false;
+        this.enableAssignToMe = false;
+        this.enableAssignToEveryAvailable = true;
     }
 
 

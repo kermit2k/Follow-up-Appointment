@@ -33,10 +33,10 @@ export default class Landing extends LightningElement {
     @track currentAppointmentData;
     @api appointmentFields;
     @api useDefaultFields;
-    @api schedulingHorizonUnit;
     @api sechedulingHorizonValue;
     @api schedulingPolicyId;
     @api showExactArrivalTime;
+    selectedHorizonUnit;
     @api operatingHoursId;
     _showModal = 0;
     @track selectedDate;
@@ -72,7 +72,14 @@ export default class Landing extends LightningElement {
 
     @api get showAssignmentMethodToggle(){
         return this.enableAssignToMe && this.enableAssignToEveryAvailable;
-    }   
+    }
+    
+    set schedulingHorizonUnit(value) {
+        this.selectedHorizonUnit = value;
+    } 
+    @api get schedulingHorizonUnit() {
+        return this.selectedHorizonUnit;
+    }
 
     @api enableAssignToMe;
     @api enableAssignToEveryAvailable;
@@ -298,15 +305,16 @@ export default class Landing extends LightningElement {
         if(this.sechedulingHorizonValue && this.selectedHorizonUnit) {
             var currentDate = new Date();
             var targetDate;
+            let sechedulingHorizonValueToNumber = parseInt(this.sechedulingHorizonValue);
             switch(this.selectedHorizonUnit) {
                 case this.SCHEDULING_UNIT_WEEK:
-                    targetDate = new Date(currentDate.setDate(currentDate.getDate() + this.sechedulingHorizonValue*7));
+                    targetDate = new Date(currentDate.setDate(currentDate.getDate() + sechedulingHorizonValueToNumber*7));
                 break;
                 case this.SCHEDULING_UNIT_MONTH:
-                    targetDate = new Date(currentDate.setMonth(currentDate.getMonth() + this.sechedulingHorizonValue));
+                    targetDate = new Date(currentDate.setMonth(currentDate.getMonth() + sechedulingHorizonValueToNumber));
                 break;
                 default: //this.SCHEDULING_UNIT_DAY
-                    targetDate = new Date(currentDate.setDate(currentDate.getDate() + this.sechedulingHorizonValue));
+                    targetDate = new Date(currentDate.setDate(currentDate.getDate() + sechedulingHorizonValueToNumber));
             }
             // if(this.selectedHorizonUnit == this.SCHEDULING_UNIT_DAY) {
             //     targetDate = new Date(currentDate.setDate(currentDate.getDate() + this.sechedulingHorizonValue));

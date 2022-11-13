@@ -131,10 +131,9 @@ export default class Landing extends LightningElement {
         console.log("connected before assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);
         this._previousServiceAppointmentId = this.serviceAppointmentId;
         console.log("connected after assignment new Service appointment:" + this.serviceAppointmentId + ", previous: " + this._previousServiceAppointmentId);    
-        this.calcAssignmentMethod();
         this.dataLoaded = false;
-        this.getInitData();
-        this.getIsExcludedInfo();
+        this.prepareInitialDataAndAssignmentData();
+        
         
     }
 
@@ -172,8 +171,17 @@ export default class Landing extends LightningElement {
 
     calcAssignmentMethod(){
         if(this.enableAssignToMe && this.enableAssignToEveryAvailable){
-            this._currentAssignmentMethod = assignmentMethod.ASSIGN_TO_ME;
-            this.isCleanupRequired = true;
+            
+            if(this.isExcluded){
+                //Admin enabled both option but Current User is ecluded from this WO
+                this._currentAssignmentMethod = assignmentMethod.ASSIGN_TO_ANY_AVIALABLE;
+                this.isCleanupRequired = false;
+            }
+            else{
+                this._currentAssignmentMethod = assignmentMethod.ASSIGN_TO_ME;
+                this.isCleanupRequired = true;
+            }
+            
         }
         else if(!this.enableAssignToMe){
             this._currentAssignmentMethod = assignmentMethod.ASSIGN_TO_ANY_AVIALABLE;
@@ -487,8 +495,6 @@ export default class Landing extends LightningElement {
                                     console.log('Error in getting slots : '+data.error);
                                     this.showAlertWithError(this.LABELS.AppointmentAssistance_confirmation_failure_message);
                                     this.timeSlotDateWise = [];
-                                    this.dummySAid =null;
-                                    this.dummyWO = null;
                                 } else {
                                     this.timeSlotWiseTemp = data.timeSlotList;
                                     this.timeSlotDateWise = this.timeSlotWiseTemp;
@@ -537,11 +543,6 @@ export default class Landing extends LightningElement {
                                 }
                             }).catch(error=>{
 
-                                if(this.dummySAid){
-                                    this.deleteDummySa(this.dummySAid);
-                                }
-                                this.dummySAid =null;
-                                this.dummyWO = null;
                                 this.showDataSpinner = false;
                                 console.log('getSlotAsPerStartDate errror is :', + error);
                                 this.timeSlotDateWise = [];
@@ -549,6 +550,8 @@ export default class Landing extends LightningElement {
                             }).finally(()=>{
                                 if(this.dummySAid){
                                     this.deleteDummySa(this.dummySAid);
+                                    this.dummySAid =null;
+                                    this.dummyWO = null;
                                 }
                             })
                         
@@ -1110,7 +1113,7 @@ export default class Landing extends LightningElement {
         });
     }
 
-    getIsExcludedInfo(){
+    prepareInitialDataAndAssignmentData(){
         
         isUserExcludedResource({userId: this.userId, serviceAppointmentId: this.serviceAppointmentId})
         .then((data)=> {
@@ -1122,6 +1125,9 @@ export default class Landing extends LightningElement {
             
         }).catch((e)=>{
             this.isExcluded = false;
+        }).finally(()=>{
+            this.calcAssignmentMethod();
+            this.getInitData();
         });
     }
 

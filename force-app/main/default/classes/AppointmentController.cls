@@ -500,6 +500,8 @@ public without sharing class AppointmentController {
             if(dummySA != null ) {
 
                 updateDummySa(dummySA, startPermitDate, dueDate, originalSa.ServiceTerritoryId);
+                results.put('said', dummySA);
+                results.put('woid', dummyWO);
                 
             }else{
 

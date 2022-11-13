@@ -1,3 +1,6 @@
+/*host {
+   --slds-c-form-element--lable-font-size: var(30px); 
+}*/
 .container{
     background-color: white;
     margin: 10px 0;
@@ -7,4 +10,7 @@
     
     font-size: 18px;
     line-height: 21px;
+    font-weight: 600;
+    color: rgb(0,0,0);
+    margin-bottom: 13px;
 }

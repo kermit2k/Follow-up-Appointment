@@ -69,6 +69,7 @@ p{
     top: 0;
     background-color: white;
     z-index: 100;
+    padding: 0 16px;
 }
 .acceptNewAptTitle{
     font-weight: 500;

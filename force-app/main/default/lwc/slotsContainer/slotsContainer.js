@@ -19,6 +19,7 @@ export default class SlotsContainer extends LightningElement {
     lastDayOfTheWeek;
     firstSlotDate;
     //@track isRecommended;
+    @api hideNonAvailableAppointments;
 
     MONTHNAME = [ this.LABELS.Appointment_ReBooking_MonthName_January,
                     this.LABELS.Appointment_ReBooking_MonthName_February,

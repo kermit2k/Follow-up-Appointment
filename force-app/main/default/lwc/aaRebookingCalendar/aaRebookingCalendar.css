@@ -1,29 +1,36 @@
 .selectedDay {
-    border-radius: 100%;
-    background-color:rgb(188, 215, 245) !important;
-    color: rgb(0, 112, 210);
-    height: 44px;
-    width: 44px;
+    border-radius: 50%;
+    color: #FFFF;
+    height: 32px;
+    width: 32px;
+    background-color: #0D7FA8 !important;
 }
 .unselectedDay {
     color: rgb(43, 40, 38);
-    height: 44px;
-    width: 44px;
+    height: 32px;
+    width: 32px;
 }
 .blockDate {
     color: rgb(201, 199, 197);
-    height: 44px;
-    width: 44px;
+    height: 32px;
+    width: 32px;
 }
 .currentDay {
-    color: rgb(0, 112, 210);
-    height: 44px;
-    width: 44px;
+    color: rgba(1,1,1,1);
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    border: 1px solid rgba(1,1,1,1) !important;
+
 }
 .currentDayBlocked {
     color: rgb(201, 199, 197);
-    height: 44px;
-    width: 44px;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    border: 1px solid rgba(159, 170, 181, 0.5) !important;
+    background-color: #EEEEEE !important;
+
 }
 .btn {
     border: none;
@@ -32,16 +39,19 @@
     border: none;
     background-color: inherit;
     padding: 0px;
-    margin: 0px;
-    height: 44px;
-    width: 44px;
+    margin-top: 6px;
+    height: 32px;
+    width: 32px;
 }
 .monthButton{
     height: 24px;
-    color: rgb(0, 0, 0);
     font-size: 20px;
     font-weight: 600;
     letter-spacing: 0.38px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    --slds-c-button-text-color: #0D7FA8;
 }
 tr {
     text-align: center;
@@ -97,5 +107,5 @@ th {
 }
 .breakLine {
     margin: 0;
-    margin-bottom: 16px;
+    margin: 16px 0;
 }

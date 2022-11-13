@@ -414,6 +414,38 @@
         <shortDescription>Title for recommended slots</shortDescription>
         <value>Recommended Appointments</value>
     </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_cant_select_Mobile_Worker_excluded</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Title for assign to mobile worker radio resource is excluded</shortDescription>
+        <value>You can’t select a mobile worker for this appointment. Ask your admin for help.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_Mobile_Worker_radio_title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Title for assign to mobile worker radio</shortDescription>
+        <value>Mobile Worker</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_Mobile_Worker_radio_assignToMe_lable</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Label mobile worker radio assign to me option with tech name</shortDescription>
+        <value>You</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_Mobile_Worker_radio_assignToAnyAvailable_lable</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Label mobile worker radio assign to any available technitian</shortDescription>
+        <value>Any available worker</value>
+    </labels>
     
     
 </CustomLabels>

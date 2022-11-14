@@ -19,6 +19,8 @@ import Appointment_ReBooking_WeekDayShort_Thu from '@salesforce/label/c.Appointm
 import Appointment_ReBooking_WeekDayShort_Fri from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Fri';
 import Appointment_ReBooking_WeekDayShort_Saturday from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Saturday';
 import Appointment_ReBooking_WeekDayShort_Sunday from '@salesforce/label/c.Appointment_ReBooking_WeekDayShort_Sunday';
+import Appointment_ReBooking_Select_a_Date from '@salesforce/label/c.Appointment_ReBooking_Select_a_Date';
+import Appointment_ReBooking_OK from '@salesforce/label/c.Appointment_ReBooking_OK';
 
 
 const customLabels = {
@@ -42,7 +44,9 @@ const customLabels = {
     Appointment_ReBooking_WeekDayShort_Thu,
     Appointment_ReBooking_WeekDayShort_Fri,
     Appointment_ReBooking_WeekDayShort_Saturday,
-    Appointment_ReBooking_WeekDayShort_Sunday
+    Appointment_ReBooking_WeekDayShort_Sunday,
+    Appointment_ReBooking_Select_a_Date,
+    Appointment_ReBooking_OK
 
     
 }

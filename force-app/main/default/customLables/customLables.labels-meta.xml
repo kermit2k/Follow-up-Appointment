@@ -446,6 +446,46 @@
         <shortDescription>Label mobile worker radio assign to any available technitian</shortDescription>
         <value>Any available worker</value>
     </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_Select_a_Date</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Title for full page calendar</shortDescription>
+        <value>Select a Date</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_OK</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Label for show results button on full page calendar</shortDescription>
+        <value>OK</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_empty_state_select_any_available_worker</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>If no appointments available and the MW can select any available worker</shortDescription>
+        <value>Select Any available worker or change the date and try again. If you can’t find any appointments, contact your admin for help.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_empty_state_change_the_dates</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>If no appointments available and the MW can't select any available worker</shortDescription>
+        <value>Change the date and try again. If you can’t find any appointments, contact your admin for help.</value>
+    </labels>
+    <labels>
+        <fullName>Appointment_ReBooking_view_more_button</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <categories>AppointmentAssistant</categories>
+        <shortDescription>Label for view more appointments button</shortDescription>
+        <value>View More</value>
+    </labels>
     
     
 </CustomLabels>

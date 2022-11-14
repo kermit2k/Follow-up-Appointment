@@ -137,18 +137,26 @@
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-align_absolute-center modal">
             <div class="slds-modal__container dialogContainer">
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-                    
-                    <div class="slds-p-around_medium lgc-bg" style="display: flex; justify-content: flex-end">
-                        <lightning-button-icon icon-name="utility:close"  
-                                alternative-text="Settings" title="Cancel" onclick={handleClick} >
-                        </lightning-button-icon>
-                    </div>
+                    <header class="slds-modal__header">
+                        <lightning-layout horizontal-align="left" class="modal-title-container">
+                            <lightning-layout-item alignment-bump="left" >
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate select-a-date-title">{LABELS.Appointment_ReBooking_Select_a_Date}</h2>
+                            </lightning-layout-item>
+                            <lightning-layout-item alignment-bump="left" >
+                                <div class="slds-current-color full-calendar-close-btn">
+                                    <lightning-button-icon variant="bare" class="slds-size_medium" icon-name="utility:close"  
+                                            title="Cancel" onclick={handleClick} >
+                                    </lightning-button-icon>
+                                </div>
+                            </lightning-layout-item >
+                        </lightning-layout> 
+                    </header>
 
                     <template for:each={noOfMonths} for:item="month">
                         <lightning-layout horizontal-align="right" key={month}>
                             <lightning-layout-item alignment-bump="right" >
                                 <span>
-                                    <div title={month.monthTitle} onclick={handleClick} class="monthButton">
+                                    <div title={month.monthTitle} onclick={handleClick} class="full-calendar-month-button">
                                         {month.monthTitle}
                                     </div>
                                 </span>
@@ -176,9 +184,48 @@
                                                         </template>
 
                                                         <template if:true={day.isValidDate}>
-                                                            <button id={day.date} class="btn unselectedDay">
+                                                            <template if:false={day.selected}>
+                                                            <template if:false={day.currentDay}>
+                                                                <template if:false={day.blocked}>
+                                                                    <button class="btn unselectedDay">
+                                                                        {day.date}
+                                                                    </button>
+                                                                </template>
+                                                            </template>
+                                                        </template>
+        
+                                                        <template if:true={day.blocked}>
+                                                            <template if:false={day.currentDay}>
+                                                                <template if:false={day.selected}>
+                                                                    <button class="btn blockDate">
+                                                                        {day.date}
+                                                                    </button>
+                                                                </template>
+                                                            </template>
+                                                        </template>
+                                                        
+                                                        <template if:true={day.selected}>
+                                                            <button class="btn selectedDay">
                                                                 {day.date}
                                                             </button>
+                                                        </template>
+        
+                                                        <template if:true={day.currentDay}>
+                                                            <template if:false={day.selected}>
+                                                                <template if:false={day.blocked}>
+                                                                    <button class="btn currentDay">
+                                                                        {day.date}
+                                                                    </button>
+                                                                </template>
+                                                            </template>
+                                                        </template>
+                                                        <template if:true={day.currentDay}>
+                                                            <template if:true={day.blocked}>
+                                                                <button class="btn currentDayBlocked">
+                                                                    {day.date}
+                                                                </button>
+                                                            </template>
+                                                        </template>
                                                         </template>
                                                     </td>
                                                 </template>
@@ -188,8 +235,14 @@
                                 </table>
                             </div>
                         </span>
-                        <hr key={month}>
+                        <!--<hr key={month}>-->
                     </template>
+                    <div class="modal-footer">
+                        <button title="OK"
+                            onclick={handleClick} class="slds-button slds-button_brand confirmBtn">
+                            {LABELS.Appointment_ReBooking_OK}
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>

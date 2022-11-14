@@ -15,7 +15,10 @@
     margin-bottom: 13px;
 }
 
-.custom-radio {
-    font-size: 22px;
+.separator{
+    height: 1px;
+    background-color: rgba(159, 170, 181, 0.5);
+    margin: 0 -16px;
 }
+
 

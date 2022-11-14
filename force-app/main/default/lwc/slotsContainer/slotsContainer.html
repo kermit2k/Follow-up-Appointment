@@ -1,6 +1,7 @@
 <template>
       <div class="slots-container">
         <div class="page-title">{pageTitle}</div>
+        <div class="separator"></div>
         <template for:each={formattedTimeSlotArray} for:item="timeSlotNewArray">    
             <template if:true={timeSlotNewArray.timeArray}>
                 <div class="header" key={timeSlotNewArray} data-id={timeSlotNewArray.title} onscroll={onScroll}>

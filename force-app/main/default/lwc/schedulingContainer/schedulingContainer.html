@@ -1,13 +1,4 @@
 <template>
-    <div class="calendarView" data-id="calendar">
-        <c-aa-rebooking-calendar class="calendarInfo"
-            ondateselection = {onDateSelected}
-            onweekchangeevent = {onWeekChangeEvent}
-            selecteddate = {selectedDate} 
-            maxvaliddate = {maxValidCalendarDate}
-            nonavailabledates = {nonAvailableDateArray} >
-        </c-aa-rebooking-calendar>
-    </div>
     <template if:true={showAssignmentMethodToggle}>
         <div>
             <c-resource-assignment
@@ -20,6 +11,15 @@
             </c-resource-assignment>
         </div>
     </template>
+    <div class="calendarView" data-id="calendar">
+        <c-aa-rebooking-calendar class="calendarInfo"
+            ondateselection = {onDateSelected}
+            onweekchangeevent = {onWeekChangeEvent}
+            selecteddate = {selectedDate} 
+            maxvaliddate = {maxValidCalendarDate}
+            nonavailabledates = {nonAvailableDateArray} >
+        </c-aa-rebooking-calendar>
+    </div>
     
     <!--recommended slots-->
     <template if:true={timeSlotObjectFilteredByGrades}>

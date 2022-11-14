@@ -7,6 +7,7 @@ import APPOINTMENT_NUMBER_FIELD from '@salesforce/schema/ServiceAppointment.Appo
 import DURATION from '@salesforce/schema/ServiceAppointment.Duration';
 //import getUserInfo from '@salesforce/apex/UserDetails.getUserInfo';
 import Id from '@salesforce/user/Id';
+import overrideCSS from './overrideCSS';
 
 export default class SettingsContainer extends LightningElement {
     title="Hello Settings LWC"
@@ -47,8 +48,12 @@ export default class SettingsContainer extends LightningElement {
 
     connectedCallback(){
         
-        this.enableAssignToMe = false;
+        this.enableAssignToMe = true;
         this.enableAssignToEveryAvailable = true;
+
+        const myStyle = document.createElement('style');
+        myStyle.innerHTML = overrideCSS;
+        document.head.appendChild(myStyle);
     }
 
 

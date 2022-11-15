@@ -610,7 +610,7 @@ public without sharing class AppointmentController {
         Map<String,String> result = new Map<String,String>();
         try {
            
-            ServiceAppointment sa = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE ID =: clonedServiceAppointmentId][0];
+            ServiceAppointment sa = [SELECT Id, ParentRecordId FROM ServiceAppointment WHERE Id =: clonedServiceAppointmentId][0];
   
             if(sa != null){
                 String woid = sa.ParentRecordId;

@@ -477,24 +477,23 @@ export default class Landing extends LightningElement {
                     dummyWO: this.dummyWO })
                 .then((saData) => {
                     if(saData.said) {
-
                         this.dummySAid = saData.said;
                         this.dummyWO = saData.woid;
                         console.log('clone sa method finished::: said' + this.dummySAid + 'wo: ' + this.dummyWO);
                         //console.log("Run appointment query for  date "+loopdate);
-                            getSlotsByAssignmentMethod({serviceAppointmentId: saData.said,
+                        getSlotsByAssignmentMethod({serviceAppointmentId: saData.said,
                                 operatingHoursId: this.operatingHoursId,
                                 schedulingPolicyId: this.schedulingPolicyId,
                                 arrivalWindowFlag: this.showExactArrivalTime,
                                 userId: this.userId,
                                 currentAssignmentMethod: this.currentAssignmentMethod,
                                 cleanupRequired: this.isCleanupRequired
-                                })
-                            .then((data) => {
-                                if(data.error) {
-                                    console.log('Error in getting slots : '+data.error);
-                                    this.showAlertWithError(this.LABELS.AppointmentAssistance_confirmation_failure_message);
-                                    this.timeSlotDateWise = [];
+                        })
+                        .then((data) => {
+                             if(data.error) {
+                                console.log('Error in getting slots : '+data.error);
+                                this.showAlertWithError(this.LABELS.AppointmentAssistance_confirmation_failure_message);
+                                this.timeSlotDateWise = [];
                                 } else {
                                     this.timeSlotWiseTemp = data.timeSlotList;
                                     this.timeSlotDateWise = this.timeSlotWiseTemp;
@@ -542,16 +541,13 @@ export default class Landing extends LightningElement {
                                     console.log("this.endWith" + this.endWith);
                                 }
                             }).catch(error=>{
-
                                 this.showDataSpinner = false;
                                 console.log('getSlotAsPerStartDate errror is :', + error);
                                 this.timeSlotDateWise = [];
                                 this.showDataSpinner = false;
                             }).finally(()=>{
-                                if(this.dummySAid){
-                                    this.deleteDummySa(this.dummySAid);
-                                    this.dummySAid =null;
-                                    this.dummyWO = null;
+                                 if(this.dummySAid){
+                                    this.deleteDummySa();
                                 }
                             })
                         
@@ -1099,14 +1095,11 @@ export default class Landing extends LightningElement {
         this.removeDatesFromCashArray();
     }
 
-    deleteDummySa(dummySaId){
-        deleteClonedAppointmentData({clonedServiceAppointmentId: dummySaId})
+    deleteDummySa(){
+        deleteClonedAppointmentData({clonedServiceAppointmentId: this.dummySaId})
         .then((data)=> {
-            console.log("after deleting cloned info :::");
-            if(data.success){
                 this.dummySAid  = null;
-                this.dummyWO = null;
-            }                               
+                this.dummyWO = null;                              
         })
         .catch((error) => {
             console.log('There was a problem deleting the SA' + JSON.stringify(error));

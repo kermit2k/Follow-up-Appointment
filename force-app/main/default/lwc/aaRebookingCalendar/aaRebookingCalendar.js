@@ -246,9 +246,11 @@ export default class AaRebookingCalendar extends LightningElement {
                         if(currentDay == today){
                             arr.currentDay = true;
                         }
-                        let selectedDate = new Date(this.selectedDateByUser.setHours(0,0,0,0)).getTime();
-                        if(currentDay == selectedDate){
-                            arr.selected = true;
+                        if(this.selectedDateByUser){
+                            let selectedDate = new Date(this.selectedDateByUser.setHours(0,0,0,0)).getTime();
+                            if(currentDay == selectedDate){
+                                arr.selected = true;
+                            }
                         }
                         days.push(arr); 
                         date++;

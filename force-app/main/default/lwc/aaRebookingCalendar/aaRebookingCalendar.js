@@ -47,6 +47,7 @@ export default class AaRebookingCalendar extends LightningElement {
 
     currentMonthYearLabel;
     alternativeTextForMonthBtn;
+    selectedDateByUser;
 
     @api get weekview() {
         return this.isWeekView;
@@ -112,7 +113,7 @@ export default class AaRebookingCalendar extends LightningElement {
 
     // calculate date by adding days
     calculateDateFromDays(date, days) {
-        var newDate = date;
+        var newDate = new Date(date);
         newDate.setDate((date.getDate() + days));
         return newDate;
     }
@@ -245,7 +246,7 @@ export default class AaRebookingCalendar extends LightningElement {
                         if(currentDay == today){
                             arr.currentDay = true;
                         }
-                        let selectedDate = new Date(this.currentSelectedDate.setHours(0,0,0,0)).getTime();
+                        let selectedDate = new Date(this.selectedDateByUser.setHours(0,0,0,0)).getTime();
                         if(currentDay == selectedDate){
                             arr.selected = true;
                         }
@@ -301,8 +302,8 @@ export default class AaRebookingCalendar extends LightningElement {
                 {
                     this.boolShowPopover = false;
                     document.body.style.overflow = 'auto';
-                    if(this.currentSelectedDate){
-                        this.handleDateSelectionEvent(this.currentSelectedDate, false);
+                    if(this.selectedDateByUser){
+                        this.handleDateSelectionEvent(this.selectedDateByUser, false);
                     }
                     this.isWeekView = true;
                     break;
@@ -319,8 +320,10 @@ export default class AaRebookingCalendar extends LightningElement {
                         for (let week = 0; week < this.noofWeeks.length; week++) {
                             for (let day = 0; day < this.noofWeeks[week].length; day++) {
                                 this.noofWeeks[week][day].selected = false;
-                                if (this.noofWeeks[week][day].date == days)
+                                if (this.noofWeeks[week][day].date == days){
                                     this.noofWeeks[week][day].selected = true;
+                                    this.selectedDateByUser = new Date(event.currentTarget.dataset.id);
+                                }
                             }
                         }
                     }
@@ -346,7 +349,7 @@ export default class AaRebookingCalendar extends LightningElement {
                             }
                             if(isValidDate) {
                                 //this.handleDateSelectionEvent(selectedDate, false);
-                                this.currentSelectedDate = selectedDate;
+                                this.selectedDateByUser = selectedDate
                             }
                         }
                     }
@@ -380,7 +383,7 @@ export default class AaRebookingCalendar extends LightningElement {
             for (let day = 0; day < this.noofWeeks[week].length; day++) {
                 this.noofWeeks[week][day].selected = false;
 
-                 if (this.noofWeeks[week][day].date == days) {
+                 if (this.selectedDateByUser && this.noofWeeks[week][day].date == this.selectedDateByUser.getDate()) {
                      // SHOW SELECTED DATE IN WEEK VIEW
                      this.noofWeeks[week][day].selected = true;
                  }

@@ -209,9 +209,7 @@ public without sharing class AppointmentController {
         Boolean arrivalWindowFlag,
         Id userId,
         String currentAssignmentMethod,
-        Boolean cleanupRequired,
-        Integer selectedHorizonValue, 
-        Datetime startPermitDate
+        Boolean cleanupRequired
     ){
         try {
 
@@ -221,8 +219,10 @@ public without sharing class AppointmentController {
             else if(currentAssignmentMethod == 'assignToAnyAvailable' && cleanupRequired == true){
                 //Cleanup previous required resource prefernces modifications created to enable assign to me
                 String workOrderId = [SELECT Id, ParentRecordId from ServiceAppointment WHERE Id =: serviceAppointmentId][0]?.ParentRecordId;
-
-                deleteExistingRequiredResources(workOrderId);
+                if(workOrderId != null){
+                    deleteExistingRequiredResources(workOrderId);
+                }
+                
             }
             else{
                 System.Debug('Error in getSlotsByAssignmentMethod::: Unfamiliar assignment method'  );
@@ -474,8 +474,7 @@ public without sharing class AppointmentController {
     }
 
     @AuraEnabled
-    public static Map<String,String> cloneWorkOrder(String originalSaId, Integer selectedHorizonValue, Datetime startPermitDate, String dummySA,
-    String dummyWO){
+    public static Map<String,String> cloneWorkOrder(String originalSaId){
         Map<String,String> results = new MAP<String,String>();
         try {
             
@@ -494,41 +493,41 @@ public without sharing class AppointmentController {
                                         WHERE ID =: originalSaId
                                         ][0];
             String originalWOId = originalSa.ParentRecordId;
-            DateTime dueDate = startPermitDate + selectedHorizonValue;
+    
             Address address = originalSa.Address;
 
-            if(dummySA != null ) {
-
-                updateDummySa(dummySA, startPermitDate, dueDate, originalSa.ServiceTerritoryId);
-                results.put('said', dummySA);
-                results.put('woid', dummyWO);
+            String newWOId = createNewDummyWorkOrder(originalSa.ServiceTerritoryId, originalSa.WorkTypeId, originalWOId );
+            results.put('inbal debug after creating new WO', newWOId );
+            if(String.isNotEmpty(newWOId)){
                 
-            }else{
-
-                String newWOId = createNewDummyWorkOrder(originalSa.ServiceTerritoryId, originalSa.WorkTypeId, originalWOId );
                 ServiceAppointment sa = [SELECT Id FROM ServiceAppointment where ParentRecordId =: newWOId][0];
+                if(sa == null){
+                    //inbal create new service appointment and connect to this woId and assign to sa
+                }
 
-                updateDummySa(sa.Id, startPermitDate, dueDate, originalSa.ServiceTerritoryId);
-                
+                results.put('inbal debug after getting new sa', sa.Id );
+                //inbal update here or check whats returned 
+                updateDummySa(sa.Id, originalSa.EarliestStartTime, originalSa.DueDate, originalSa.ServiceTerritoryId);
+                results.put('inbal debug after updating sa eraliest start time', sa.Id );
+
                 //Clone resource preference list
                 String workOrderId = [SELECT Id, ParentRecordId from ServiceAppointment WHERE Id =: originalSAId][0]?.ParentRecordId;
+                results.put('inbal debug after getting original wo', workOrderId );
                 System.debug('cloning resource refernce :::' + workOrderId + newWOId); 
                 cloneResourcePreference(workOrderId, newWOId);
-
+                //inbal check returned from clone results
+                results.put('inbal debug after calling clone resource newWOId', newWOId );
 
                 System.debug('Returning cloned results:::' + sa.Id + newWOId);
-                results.put('said', sa.Id);
-                results.put('woid', newWOId);
-
-               
+                results.put('dummyServiceAppointmentId', sa.Id);
+                results.put('dummyWorkOrderId', newWOId);
             }
+            
             
             return results;
 
         }catch (Exception e) {
-            results.put('error in clone work order:::' , e.getMessage() + e.getLineNumber() );
-            return results;
-            //throw new AuraHandledException(e.getMessage());
+            throw new AuraHandledException('error in clone work order:::' + e.getMessage() + e.getLineNumber());
         }
     
     }
@@ -680,31 +679,36 @@ public without sharing class AppointmentController {
     
     @AuraEnabled
     public static string createNewDummyWorkOrder(String serviceTerritoryId, String workTypeId, String originalWOId){
-        try {            
-                WorkOrder newWO = new WorkOrder();
+        try {    
+            String result='';        
+            WorkOrder newWO = new WorkOrder();
+            if(String.isNotEmpty(workTypeId)){
                 newWO.WorkTypeId = workTypeId;
-                Address originalAddress = [SELECT Address from WorkOrder WHERE Id =: originalWOId][0]?.Address;
+            }
+            
 
-                if(String.IsEmpty(ServiceTerritoryId) && originalAddress != null){
-                        if(originalAddress.Latitude != null && originalAddress.Longitude != null){
-                            newWO.Longitude = originalAddress.Longitude;
-                            newWO.Latitude = originalAddress.Latitude;
-                        }
-                        else{
-                            newWO.Street = originalAddress.Street;
-                            newWO.City = originalAddress.City;
-                            newWO.State = originalAddress.State;
-                            newWO.Country = originalAddress.Country;
-                            newWO.PostalCode = originalAddress.PostalCode;
-                        }
-                }
-
-                insert newWo;
-
-                return newWo.Id;
+            Address originalAddress = [SELECT Address from WorkOrder WHERE Id =: originalWOId][0]?.Address;
+            
+            if(String.IsEmpty(ServiceTerritoryId) && originalAddress != null){
+                    if(originalAddress.Latitude != null && originalAddress.Longitude != null){
+                        newWO.Longitude = originalAddress.Longitude;
+                        newWO.Latitude = originalAddress.Latitude;
+                    }
+                    else{
+                        newWO.Street = originalAddress.Street;
+                        newWO.City = originalAddress.City;
+                        newWO.State = originalAddress.State;
+                        newWO.Country = originalAddress.Country;
+                        newWO.PostalCode = originalAddress.PostalCode;
+                    }
+            }
+            
+            insert newWo;
+            result = newWO.Id;
+            return result;
                 
         } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
+            throw new AuraHandledException('Error in create new Dummy Work Order' + e.getMessage());
         }      
     }
 

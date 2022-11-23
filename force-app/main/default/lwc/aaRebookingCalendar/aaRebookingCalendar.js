@@ -48,6 +48,7 @@ export default class AaRebookingCalendar extends LightningElement {
     currentMonthYearLabel;
     alternativeTextForMonthBtn;
     selectedDateByUser;
+    _appointmentDate;
 
     @api get weekview() {
         return this.isWeekView;
@@ -87,6 +88,16 @@ export default class AaRebookingCalendar extends LightningElement {
             this.nonAvalableDates = value;
             //console.log("non available dates updated : "+this.nonAvalableDates.length);
             this.setBlockDatesInWeekView(this.currentSelectedDate);
+        }
+    }
+
+    @api get appointmentDate() {
+        return this._appointmentDate;
+    }
+    set appointmentDate(value) {
+        if(value) {
+            this._appointmentDate = new Date(value);
+
         }
     }
 
@@ -252,6 +263,13 @@ export default class AaRebookingCalendar extends LightningElement {
                                 arr.selected = true;
                             }
                         }
+                        
+                        else if (!this.selectedDateByUser){
+                            //first state when the user hasn't select date yet - show the appt date as selcted
+                            if(this._appointmentDate && currentDay == this._appointmentDate.setHours(0,0,0,0)) {
+                                arr.selected = true;
+                            }
+                        }
                         days.push(arr); 
                         date++;
                     } else break;
@@ -388,6 +406,13 @@ export default class AaRebookingCalendar extends LightningElement {
                  if (this.selectedDateByUser && this.noofWeeks[week][day].date == this.selectedDateByUser.getDate()) {
                      // SHOW SELECTED DATE IN WEEK VIEW
                      this.noofWeeks[week][day].selected = true;
+                 }
+
+                 else if (!this.selectedDateByUser){
+                    //first state when the user hasn't select date yet - show the appt date as selcted
+                    if(this._appointmentDate && this.noofWeeks[week][day].value.setHours(0,0,0,0) == this._appointmentDate.setHours(0,0,0,0)) {
+                        this.noofWeeks[week][day].selected = true;
+                    }
                  }
                 
                 // SHOW CURRENT DATE IN WEEK VIEW

@@ -625,11 +625,9 @@ public without sharing class AppointmentController {
                                          
                     }
                     delete wo;
+                    result.put('success', 'Sa: ' + sa.id + ' WO: ' + woid);
                 }
-                
-                
-
-                result.put('success', 'clonedServiceAppointmentId');
+                             
                 
             }
             

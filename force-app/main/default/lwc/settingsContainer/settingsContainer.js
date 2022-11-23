@@ -14,11 +14,11 @@ export default class SettingsContainer extends LightningElement {
 
     //@api serviceAppointmentId;
     userId = Id;
-    @api operatingHoursId = "0OH7e000000Cj5iGAC";
-    @api schedulingPolicyId ="a0Z7e00000MImdzEAD"; 
+    @api operatingHoursId = "0OH8N0000005w1VWAQ";
+    @api schedulingPolicyId ="a0Z8N00000029fZUAQ"; 
     @api arrivalWindowMethod = "Arrival Windows";
-    @api schedulingHorizonUnit = "Days";
-    @api sechedulingHorizonValue = "20";
+    @api schedulingHorizonUnit = "Months";
+    @api sechedulingHorizonValue = "3";
     enableAssignTo;
     @api enableAssignToMe;
     @api enableAssignToEveryAvailable;

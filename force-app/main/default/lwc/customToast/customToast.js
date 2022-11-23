@@ -13,7 +13,7 @@ export default class CustomToast extends LightningElement {
 
     connectedCallback(){
         //scroll top when toast is shown
-        window.scrollTo(0, 0);
+        //window.scrollTo(0, 0);
         if(this._variant){
             if (this._variant == "success"){
                 this.toastClass = SUCCESS_CLASS;

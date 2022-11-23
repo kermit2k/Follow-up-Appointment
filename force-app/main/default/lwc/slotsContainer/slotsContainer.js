@@ -63,8 +63,10 @@ export default class SlotsContainer extends LightningElement {
         return this.timeSlotDateWise;
     }
     set timeslotobject(value) {
-        //inbal: applay data filters here? or landing?
+        console.log("timeslotobject set called with value::: " + value);
         if(value) {
+            console.log("timeslotobject set value received::: " + JSON.stringify
+            (value));
             var arr = [];
             arr = value;
 
@@ -94,7 +96,7 @@ export default class SlotsContainer extends LightningElement {
         this.lastDayOfTheWeek = this.getLastDayOfWeek(date, 0);
         this.selectedDate = date;
         this.handleTimeSlotUpdateEvent(this.timeSlotDateWise);
-        window.scrollTo(0, 250);
+        //window.scrollTo(0, 250);
     }
 
     @api get shownoofdaysbeforeafterweek(){
@@ -159,6 +161,7 @@ export default class SlotsContainer extends LightningElement {
             }
         }
         console.log('---------- Time slots ----------');
+        console.log("formatTimeSlots::: " + JSON.stringify(formattedSlotArr));
         return this.formatUniqueArray(formattedSlotArr);
     }
 
@@ -209,7 +212,7 @@ export default class SlotsContainer extends LightningElement {
         //     var d = new Date(b.date);
         //     return c-d;
         // });
-
+        console.log("formatUniqueArray::: " + JSON.stringify(timeSlotNewArray));
         return timeSlotNewArray;
     }
 
@@ -230,9 +233,11 @@ export default class SlotsContainer extends LightningElement {
      * CALL THIS METHOD WHEN TIMESLOT OBJECT IS UPDATED;
      */
     handleTimeSlotUpdateEvent(dateWiseSlotArray) {
-        
+        console.log("handleTimeSlotUpdateEvent called with dateWiseSlotArray::: " + JSON.stringify(dateWiseSlotArray));
         this.formattedTimeSlotArrayTemp = this.formatTimeSlots(dateWiseSlotArray);
+        console.log("handleTimeSlotUpdateEvent this.formattedTimeSlotArrayTemp::: " + JSON.stringify(this.formattedTimeSlotArrayTemp));
         this.formattedTimeSlotArray = this.sortTimeSlotAccordingToWeekSelected(this.formattedTimeSlotArrayTemp);
+        console.log("handleTimeSlotUpdateEvent updated formattedTimeSlotArray::: " + JSON.stringify(this.formattedTimeSlotArray));
         this.callCustomEvent('updateNonAvailableDates', this.nonAvailableDateArray);
     }
 
@@ -441,7 +446,7 @@ export default class SlotsContainer extends LightningElement {
                 var offset = elementToShowLocation.top -145; //gets the difference between user view and element view minus the calendar height
                 if (!this.isWeekUpdated) {
                     elementToShow.classList.add("headerBold");
-                    window.scrollBy({top: offset, behavior: 'smooth'});
+                    //window.scrollBy({top: offset, behavior: 'smooth'});
                 }
                 this.previousElement = elementToShow;
             } 

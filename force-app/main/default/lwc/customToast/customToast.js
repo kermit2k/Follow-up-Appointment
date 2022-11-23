@@ -12,21 +12,23 @@ export default class CustomToast extends LightningElement {
     @track toastClass;
 
     connectedCallback(){
-        if(this._variant){
-            if (this._variant == "success"){
-                this.toastClass = SUCCESS_CLASS;
-            }
-            else if (this._variant == "warning"){
-                this.toastClass = WARNING_CLASS;
-            }
-            else if (this._variant == "error"){
-                this.toastClass = ERROR_CLASS;
-            }
+    //scroll top when toast is shown
+    //window.scrollTo(0, 0);
+    if(this._variant){
+        if (this._variant == "success"){
+            this.toastClass = SUCCESS_CLASS;
         }
-        //this.showToast = true;
-        setTimeout(() => {
-            this.handleCloseToastEvent();
-        }, 5000);
+        else if (this._variant == "warning"){
+            this.toastClass = WARNING_CLASS;
+        }
+        else if (this._variant == "error"){
+            this.toastClass = ERROR_CLASS;
+        }
+    }
+    //this.showToast = true;
+    setTimeout(() => {
+        this.handleCloseToastEvent();
+    }, 5000);
     }
 
     @api get variant() {

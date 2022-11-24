@@ -562,7 +562,7 @@ export default class Landing extends LightningElement {
 
                                 }
                                 console.log("inbal handleGetSlotQueryForSelectedDateRange completed???::: 8");
-                                this.deleteDummySa();
+                                
                                 
                             }
                         }).catch(error=>{
@@ -1182,7 +1182,8 @@ export default class Landing extends LightningElement {
                 console.log("createDummySaAndGetSlots create dummy fulfilled::::??" + this.dummySAid);
                 this.handleGetSlotQueryForSelectedDateRange(selectedDate);
                 console.log("createDummySaAndGetSlots after  handleGetSlotQueryForSelectedDateRange ended?:::" + this.dummySAid);
-                //this.deleteDummySa();
+
+                this.deleteDummySa();
             }
             
         }catch(e){

@@ -10,6 +10,7 @@ import updateSASlot from '@salesforce/apex/AppointmentController.updateSASlot';
 import cloneWorkOrder from '@salesforce/apex/AppointmentController.cloneWorkOrder';
 import deleteClonedAppointmentData from '@salesforce/apex/AppointmentController.deleteClonedAppointmentData';
 import isUserExcludedResource from '@salesforce/apex/AppointmentController.isUserExcludedResource';
+import convertTimeToOtherTimeZone from '@salesforce/apex/AppointmentController.convertTimeToOtherTimeZone';
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c/utils';
@@ -459,6 +460,7 @@ export default class Landing extends LightningElement {
     }
 
     handleGetSlotQueryForSelectedDateRange(selectedDate) {
+        let lcaletime = Intl.DateTimeFormat().resolvedOptions().timeZone;
         console.log("handleGetSlotQueryForSelectedDateRange started:::" + " id: " + this.dummySAid );
         var firstDateOfWeek = selectedDate;
         if(firstDateOfWeek <= new Date()) {
@@ -501,7 +503,8 @@ export default class Landing extends LightningElement {
                             arrivalWindowFlag: this.showExactArrivalTime,
                             userId: this.userId,
                             currentAssignmentMethod: this.currentAssignmentMethod,
-                            cleanupRequired: this.isCleanupRequired
+                            cleanupRequired: this.isCleanupRequired,
+                            localetimezone:  lcaletime
                         })
                         .then((data) => {
 
@@ -612,8 +615,34 @@ export default class Landing extends LightningElement {
         }
     }
 
-
     onServiceAppointmentUpdate = (event) => {
+        let selectedSlotStart = event.detail.selectedSlotStart;
+        let selectedSlotEnd = event.detail.selectedSlotEnd;
+
+        // in case of no Service Territory, skip apex class
+        if (this.serviceTerritoryTimeZone) {
+            /**
+             * CONVERT THE TIME FROM LOCALE TO SERVER
+             */
+            convertTimeToOtherTimeZone({    date1: selectedSlotStart,
+                                            date2: selectedSlotEnd,
+                                            targetTimezone: this.serviceTerritoryTimeZone,
+                                            sourceTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone 
+                                        })
+            .then((data) => {
+                console.log('Date converted from apex is : '+new Date(data.date1));
+                console.log('Date converted from apex is : '+new Date(data.date2));
+                selectedSlotStart = new Date(data.date1);
+                selectedSlotEnd = new Date(data.date2);
+                this.UpdateServiceAppointmentFunction(event);
+            }).catch(error => {
+                console.log('error is : '+error);
+            })
+        } else this.UpdateServiceAppointmentFunction(event);
+
+    }
+
+    UpdateServiceAppointmentFunction = (event) => {
         let selectedSlotStart = event.detail.selectedSlotStart;
         let selectedSlotEnd = event.detail.selectedSlotEnd;
         this.selectedSlotStringForToast = formatAppointmentDateandHourRange(selectedSlotStart, selectedSlotEnd);

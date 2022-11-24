@@ -140,7 +140,8 @@ public without sharing class AppointmentController {
         String serviceAppointmentId,
         Id operatingHoursId,
         Id schedulingPolicyId,
-        Boolean arrivalWindowFlag
+        Boolean arrivalWindowFlag,
+        String localetimezone
         ) {
         // CALL to instrumentation api
         // InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - getSlotsAsPerEarliestStartDate()');
@@ -154,7 +155,12 @@ public without sharing class AppointmentController {
                                         FROM ServiceAppointment
                                         WHERE ID =: serviceAppointmentId
                                         ][0];        
-                Timezone timeZone = UserInfo.getTimeZone();
+                Timezone timeZone = Timezone.getTimeZone(localetimezone);
+                if(timeZone == null ) {
+                    timeZone = UserInfo.getTimeZone();
+                }
+                slotsList.put('timeZone', +timeZone.getId());
+
                 if (sa.ServiceTerritoryId != null) {   
                     ServiceTerritory st = [SELECT OperatingHoursId  
                                             FROM ServiceTerritory   
@@ -165,20 +171,17 @@ public without sharing class AppointmentController {
                                         WHERE ID =: st.OperatingHoursID 
                                         ][0];   
                     timeZone = System.Timezone.getTimeZone(oh.TimeZone);
+                    slotsList.put('timeZone', +timeZone.getId());
 
                 }
 
-                    List<FSL.AppointmentBookingSlot> timeSlots = FSL.AppointmentBookingService.GetSlots(
-                    serviceAppointmentId,
-                    schedulingPolicyId,
-                    operatingHoursId,
-                    timeZone,
-                    arrivalWindowFlag
-                    );
-
-                                    
-
-                
+                List<FSL.AppointmentBookingSlot> timeSlots = FSL.AppointmentBookingService.GetSlots(
+                serviceAppointmentId,
+                schedulingPolicyId,
+                operatingHoursId,
+                timeZone,
+                arrivalWindowFlag
+                );
 
 
                 slotsList.put('list', timeSlots);
@@ -209,7 +212,8 @@ public without sharing class AppointmentController {
         Boolean arrivalWindowFlag,
         Id userId,
         String currentAssignmentMethod,
-        Boolean cleanupRequired
+        Boolean cleanupRequired,
+        String localetimezone
     ){
         try {
 
@@ -228,7 +232,7 @@ public without sharing class AppointmentController {
                 System.Debug('Error in getSlotsByAssignmentMethod::: Unfamiliar assignment method'  );
             }
 
-             return getSlots(serviceAppointmentId, operatingHoursId, schedulingPolicyId, arrivalWindowFlag);
+             return getSlots(serviceAppointmentId, operatingHoursId, schedulingPolicyId, arrivalWindowFlag, localetimezone);
         
         } catch (Exception e) {
             throw new AuraHandledException('Error in getSlotsByAssignmentMethod:::' + e.getMessage());
@@ -719,5 +723,39 @@ public without sharing class AppointmentController {
        ][0];
         
         return sr.Name;
+    }
+
+    @AuraEnabled()
+    public static Map<String, DateTime> convertTimeToOtherTimeZone(DateTime date1, DateTime date2, string sourceTimezone, string targetTimezone)
+    {
+        
+        Map<String, DateTime> detailArray = new Map<String, DateTime>();
+        // Source Timezone 
+        TimeZone tz = Timezone.getTimeZone(sourceTimezone);
+        System.debug('Display name: ' + tz.getDisplayName());
+        System.debug('ID: ' + tz.getID());
+        
+        Integer offset = tz.getOffset(date1);
+        System.debug('Offset: ' + offset/ (1000 * 60));
+
+        Integer offset2 = tz.getOffset(date2);
+        System.debug('Offset: ' + offset2/ (1000 * 60));
+        
+        // target Timezone.
+        TimeZone targetTZ = Timezone.getTimeZone(targetTimezone);
+        System.debug('Display name: ' + targetTZ.getDisplayName());
+        
+        // Date 1
+        integer offsetTotargetTZ = targetTZ.getOffset(date1);
+       	integer correction1 = offset - offsetTotargetTZ;
+
+        // Date 2
+        integer offsetTotargetTZ2 = targetTZ.getOffset(date2);
+        integer correction2 = offset2 - offsetTotargetTZ2 ;
+
+        detailArray.put('date1',date1.addMinutes(correction1 / (1000 * 60)));
+        detailArray.put('date2',date2.addMinutes(correction2 / (1000 * 60)));
+        
+        return detailArray;
     }
 }

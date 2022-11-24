@@ -7,6 +7,7 @@ import getSlots from '@salesforce/apex/AppointmentController.getSlots';
 import updateSA from '@salesforce/apex/AppointmentController.updateSA';
 import scheduleSA from '@salesforce/apex/AppointmentController.scheduleSA';
 import updateSASlot from '@salesforce/apex/AppointmentController.updateSASlot';
+import convertTimeToOtherTimeZone from '@salesforce/apex/AppointmentController.convertTimeToOtherTimeZone';
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
@@ -224,6 +225,28 @@ export default class SchedulingContainer extends LightningElement {
     onSlotSelection(event) {
         this.selectedSlotStart = event.detail.startDate;
         this.selectedSlotEnd = event.detail.endDate;
+        
+        // run only if there is Service Territory
+        if (this.serviceTerritoryTimeZone) {
+            
+            /**
+             * CONVERT THE TIME FROM LOCALE TO SERVER
+             */
+            convertTimeToOtherTimeZone({    date1: this.selectedSlotStart,
+                                            date2: this.selectedSlotEnd,
+                                            targetTimezone:  this.serviceTerritoryTimeZone,
+                                            sourceTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone 
+                                    })
+            .then((data) => {
+
+                this.selectedSlotStart = new Date(data.date1);
+                this.selectedSlotEnd = new Date(data.date2);
+
+            }).catch(error => {
+                console.log('error is : '+error);
+            })
+        }
+        
         this.setNewAppointmentSelectedText(event.detail.startDate, event.detail.endDate);
     }
 

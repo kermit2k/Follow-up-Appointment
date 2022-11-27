@@ -10,9 +10,6 @@ import Id from '@salesforce/user/Id';
 import overrideCSS from './overrideCSS';
 
 export default class SettingsContainer extends LightningElement {
-    title="Hello Settings LWC"
-
-    //@api serviceAppointmentId;
     userId = Id;
     @api operatingHoursId = "0OH8N0000005w1VWAQ";
     @api schedulingPolicyId ="a0Z8N00000029fZUAQ"; 
@@ -55,16 +52,5 @@ export default class SettingsContainer extends LightningElement {
         myStyle.innerHTML = overrideCSS;
         document.head.appendChild(myStyle);
     }
-
-
-    /*@wire(getUserInfo, { userId: Id }) 
-    userDetails({error, data}) {
-        if (data) {
-            console.log("USer Id:::" + JSON.stringify(data));
-        } else if (error) {
-            this.error = error ;
-        }
-    }*/
-
     
 }

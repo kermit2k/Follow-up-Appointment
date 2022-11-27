@@ -501,7 +501,7 @@ public without sharing class AppointmentController {
             Address address = originalSa.Address;
 
             String newWOId = createNewDummyWorkOrder(originalSa.ServiceTerritoryId, originalSa.WorkTypeId, originalWOId );
-            results.put('inbal debug after creating new WO', newWOId );
+            
             if(String.isNotEmpty(newWOId)){
                 
                 ServiceAppointment sa = [SELECT Id FROM ServiceAppointment where ParentRecordId =: newWOId][0];
@@ -509,18 +509,17 @@ public without sharing class AppointmentController {
                     //inbal create new service appointment and connect to this woId and assign to sa
                 }
 
-                results.put('inbal debug after getting new sa', sa.Id );
+                
                 //inbal update here or check whats returned 
                 updateDummySa(sa.Id, originalSa.EarliestStartTime, originalSa.DueDate, originalSa.ServiceTerritoryId);
-                results.put('inbal debug after updating sa eraliest start time', sa.Id );
+                
 
                 //Clone resource preference list
                 String workOrderId = [SELECT Id, ParentRecordId from ServiceAppointment WHERE Id =: originalSAId][0]?.ParentRecordId;
-                results.put('inbal debug after getting original wo', workOrderId );
+                
                 System.debug('cloning resource refernce :::' + workOrderId + newWOId); 
                 cloneResourcePreference(workOrderId, newWOId);
                 //inbal check returned from clone results
-                results.put('inbal debug after calling clone resource newWOId', newWOId );
 
                 System.debug('Returning cloned results:::' + sa.Id + newWOId);
                 results.put('dummyServiceAppointmentId', sa.Id);

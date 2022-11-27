@@ -47,6 +47,8 @@ export default class Landing extends LightningElement {
     dummySAid;
     dummyWO;
     getSlotQueryRunning = false;
+    clonedServiceAppointmentsArr = [];
+    clonedWorkOrdersArr = [];
     @api get maxValidCalendarDate(){
         return this._maxValidCalendarDate;
     };
@@ -243,9 +245,7 @@ export default class Landing extends LightningElement {
                     } else {
                         this.minValidCalendarDate = this.getDateWithoutTime(new Date());
                     }
-                    //this.selectedDate = new Date();
-                    //firstDateOfWeek = this.getFirstDayOfWeek(this.selectedDate,0);
-                    //this.handleGetSlotQueryForSelectedDateRange(firstDateOfWeek);
+                   
                     this.dataLoaded = true;
                     }
             })
@@ -450,10 +450,17 @@ export default class Landing extends LightningElement {
     }
 
     handleGetSlotQueryForSelectedDate(event) {
+        event.stopPropagation();
+        event.preventDefault();
         var firstDateOfWeek = this.getFirstDayOfWeek(event.detail.selectedDate);
         if(this.dataLoaded){
             console.log("Calling createDummySaAndGetSlots::: " + "Current DummySA: " + this.dummySAid + ", firstDateOfWeek: " + firstDateOfWeek);
             this.createDummySaAndGetSlots(firstDateOfWeek);
+            /*if(!this.getSlotQueryRunning){
+                this.getSlotQueryRunning = true;
+                this.createDummySaAndGetSlots(firstDateOfWeek);
+            }*/
+            
             
         }
         
@@ -494,9 +501,9 @@ export default class Landing extends LightningElement {
                     arrivalStartDate: null, arrivalEndDate: null })
                 .then((saData) => {
                     if(saData.success) {
-                    
+                        
                         console.log("Run appointment query for  date "+loopdate);
-                        console.log("inbal calling get getSlotsByAssignmentMethod:::" + this.currentAssignmentMethod);
+                        
                         getSlotsByAssignmentMethod({serviceAppointmentId: this.dummySAid,
                             operatingHoursId: this.operatingHoursId,
                             schedulingPolicyId: this.schedulingPolicyId,
@@ -508,9 +515,11 @@ export default class Landing extends LightningElement {
                         })
                         .then((data) => {
 
-                            this.revertSA();
-                            
+                            //this.deleteDummySa();
+
                             if(data.error) {
+                                //this.getSlotQueryRunning = false;
+                                this.deleteDummySa(this.dummySAid);
                                 console.log('Error in getting slots : '+data.error);
                                 this.showAlertWithError(this.LABELS.AppointmentAssistance_confirmation_failure_message);
                                 this.timeSlotDateWise = [];
@@ -527,7 +536,8 @@ export default class Landing extends LightningElement {
                                     console.log("Date in the Array is : last date is  "+lastDateOfSlot);
                                     this.addDatesToCashArray(new Date(loopdate), new Date(lastDateOfSlot));
                                     if(lastDateOfSlot >= lastDateOfWeek) {
-                
+                                        //this.getSlotQueryRunning = false;
+                                        this.deleteDummySa(this.dummySAid);
                                         this.showDataSpinner = false;
                                         this.timeSlotDateWise = this.timeSlotWiseTemp;
                                         console.log("inbal handleGetSlotQueryForSelectedDateRange completed???::: 4");
@@ -543,6 +553,8 @@ export default class Landing extends LightningElement {
                                         if(loopdate <= lastDateOfWeek) {
                                             this.handleGetSlotQueryForSelectedDateRange(loopdate);
                                         } else {
+                                            //this.getSlotQueryRunning = false;
+                                            this.deleteDummySa(this.dummySAid);
                                             this.showDataSpinner = false;
                                             this.timeSlotDateWise = this.timeSlotWiseTemp;
                                             console.log("inbal handleGetSlotQueryForSelectedDateRange completed???::: 1");
@@ -555,6 +567,8 @@ export default class Landing extends LightningElement {
                                     if(loopdate <= lastDateOfWeek) {
                                         this.handleGetSlotQueryForSelectedDateRange(loopdate);
                                     } else {
+                                        //this.getSlotQueryRunning = false;
+                                        this.deleteDummySa(this.dummySAid);
                                         this.timeSlotDateWise = this.timeSlotWiseTemp;
                                         this.showDataSpinner = false;
                                         console.log("inbal handleGetSlotQueryForSelectedDateRange completed???::: 2");
@@ -563,26 +577,36 @@ export default class Landing extends LightningElement {
                                 }
                                 console.log("inbal handleGetSlotQueryForSelectedDateRange completed???::: 8");
                                 
+                                setTimeout(()=>{
+                                    this.cleanupClonedAppointments();
+                                }, 15000)
+                                
                                 
                             }
                         }).catch(error=>{
                             // delete SA/WO incase transaction fails
-                            this.revertSA();
+                            //this.revertSA();
+                            //this.getSlotQueryRunning = false;
+                            this.deleteDummySa(this.dummySAid);
                             this.showDataSpinner = false;
-                            console.log('getSlotAsPerStartDate errror is :' + error);
+                            console.log('getSlotAsPerStartDate errror is :' + JSON.stringify(error));
                             this.timeSlotDateWise = [];
                             this.showDataSpinner = false;
                         })
                     }
                     if(saData.error) {
+                        //this.getSlotQueryRunning = false;
+                        this.deleteDummySa(this.dummySAid);
                         this.showDataSpinner = false;
                         console.log('getSlotAsPerStartDate errror is :' + saData.error);
                         this.timeSlotDateWise = [];
                     }
 
                 }).catch(error => {
+                    //this.getSlotQueryRunning = false;
+                    this.deleteDummySa(this.dummySAid);
                     this.showDataSpinner = false;
-                    console.log('getSlotAsPerStartDate errror is :' + error);
+                    console.log('getSlotAsPerStartDate errror is :' + JSON.stringify(error));
                     this.timeSlotDateWise = [];
                     this.showDataSpinner = false;
                 })
@@ -595,6 +619,8 @@ export default class Landing extends LightningElement {
                 if(loopdate <= lastDateOfWeek) {
                     this.handleGetSlotQueryForSelectedDateRange(loopdate);
                 } else {
+                    //this.getSlotQueryRunning = false;
+                    this.deleteDummySa(this.dummySAid);
                     this.timeSlotDateWise = this.timeSlotWiseTemp;
                     this.showDataSpinner = false;
                     console.log("inbal handleGetSlotQueryForSelectedDateRange completed???::: 3");
@@ -609,6 +635,8 @@ export default class Landing extends LightningElement {
             if(loopdate <= lastDateOfWeek) {
                 this.handleGetSlotQueryForSelectedDateRange(loopdate);
             } else {
+                //this.getSlotQueryRunning = false;
+                this.deleteDummySa(this.dummySAid);
                 this.timeSlotDateWise = [];
             }
 
@@ -738,6 +766,8 @@ export default class Landing extends LightningElement {
         } else {
             console.log("Invalid date time ");
         }
+
+        this.cleanupClonedAppointments();
         
     }
     
@@ -964,12 +994,16 @@ export default class Landing extends LightningElement {
     }
 
     onSlotSelection(event) {
+        e.stopPropagation();
+        e.preventDefault();
         this.selectedSlotStart = event.detail.startDate;
         this.selectedSlotEnd = event.detail.endDate;
         this.setNewAppointmentSelectedText(event.detail.startDate, event.detail.endDate);
     }
 
     onCustomEventCalled(event) {
+        //e.stopPropagation();
+        e.preventDefault();
         switch (event.detail.name) {
             case 'trigergetslotapi': {
                 this.runApexQueryToChangeEarlistStartDate(event.detail.value);
@@ -1137,7 +1171,7 @@ export default class Landing extends LightningElement {
         //clone and get slots
         console.log("Calling createDummySaAndGetSlots after assignment method change:::");
         this.createDummySaAndGetSlots(firstDateOfWeek);
-        console.log("handleCurrentAssignmentMethodChange after createDummySaAndGetSlots ended?:::" + this.dummySAid);
+        
 
     }
 
@@ -1148,43 +1182,45 @@ export default class Landing extends LightningElement {
         this.removeDatesFromCashArray();
     }
 
-    deleteDummySa(){
-        console.log("deleteDummySa begins :::  Dummy Service Appointment: " + this.dummySAid + "Dummy Work Order: " + this.dummyWO);
-        if(this.dummySAid){
-            deleteClonedAppointmentData({clonedServiceAppointmentId: this.dummySAid})
+    deleteDummySa(dummySaId){
+        console.log("deleteDummySa begins :::  Dummy Service Appointment: " + dummySaId);
+        deleteClonedAppointmentData({clonedServiceAppointmentId: dummySaId})
             .then((data)=> {
                     if(data){
                         console.log("deleteClonedAppointmentData response ::::" + JSON.stringify(data, null, 2));
                         this.dummySAid  = null;
                         this.dummyWO = null; 
+                        this.removeDummySaFromClonedArray(dummySaId);
                     }
                                                 
             })
             .catch((error) => {
                 console.log('There was a problem deleting the SA' + JSON.stringify(error));
             });
-            }
             
-        
+       
     }
 
     async createDummySaAndGetSlots(selectedDate){
         try{
-            console.log("createDummySaAndGetSlots create dummy sa begin:::" + "selected Date:" + selectedDate + "service appointment" + this.serviceAppointmentId + "Existing DummySA? " + this.dummySAid);
-            const clonedInfo = await cloneWorkOrder({originalSaId: this.serviceAppointmentId});
-            console.log("createDummySaAndGetSlots cloned Info:::" + JSON.stringify(clonedInfo, null, 2));
+            console.log("createDummySaAndGetSlots create dummy sa begin:::" + "selected Date:" + selectedDate + "time" + new Date().toLocaleTimeString() + "Existing DummySA? " + this.dummySAid);
+            if(!this.dummySAid){
+                const clonedInfo = await cloneWorkOrder({originalSaId: this.serviceAppointmentId});
+                console.log("createDummySaAndGetSlots cloned Info:::" + JSON.stringify(clonedInfo, null, 2));
 
-            if(clonedInfo && clonedInfo.dummyServiceAppointmentId && clonedInfo.dummyWorkOrderId){
-               
-                this.dummySAid = clonedInfo.dummyServiceAppointmentId;
-                this.dummyWO = clonedInfo.dummyWorkOrderId;
+                if(clonedInfo && clonedInfo.dummyServiceAppointmentId && clonedInfo.dummyWorkOrderId){
+                    this.clonedServiceAppointmentsArr.push(clonedInfo.dummyServiceAppointmentId);
+                    this.clonedWorkOrdersArr.push(clonedInfo.dummyWorkOrderId);
+                    this.dummySAid = clonedInfo.dummyServiceAppointmentId;
+                    this.dummyWO = clonedInfo.dummyWorkOrderId;
 
-                console.log("createDummySaAndGetSlots create dummy fulfilled::::??" + this.dummySAid);
-                this.handleGetSlotQueryForSelectedDateRange(selectedDate);
-                console.log("createDummySaAndGetSlots after  handleGetSlotQueryForSelectedDateRange ended?:::" + this.dummySAid);
-
-                this.deleteDummySa();
+                    console.log("createDummySaAndGetSlots create dummy fulfilled::::??" + this.dummySAid);
+                    this.handleGetSlotQueryForSelectedDateRange(selectedDate);
+                    
+                }
             }
+            
+            
             
         }catch(e){
             console.log("Error in createDummySaAndGetSlots::: " + JSON.stringify(e));
@@ -1208,6 +1244,26 @@ export default class Landing extends LightningElement {
             this.calcAssignmentMethod();
             this.getInitData();
         });
+    }
+
+    cleanupClonedAppointments(){
+        console.log("Clearing cloned appointments ::: remaining appointments: " + this.clonedServiceAppointmentsArr);
+        try{
+            if(this.clonedServiceAppointmentsArr && this.clonedServiceAppointmentsArr.length > 0){
+                this.clonedServiceAppointmentsArr.forEach((appointment)=>{
+                    this.deleteDummySa(appointment);
+                })
+            }
+        }catch(e){
+            console.log("Error in cleanupClonedAppointments:::" + JSON.stringify(e));
+        }
+        
+    }
+
+    removeDummySaFromClonedArray(dummySa){
+        console.log("Removing dummySa fron clonedAppointments array::: " + dummySa);
+        let updatedClonedArray = this.clonedServiceAppointmentsArr.filter(appointment => appointment != dummySa );
+        this.clonedServiceAppointmentsArr = updatedClonedArray;
     }
 
     

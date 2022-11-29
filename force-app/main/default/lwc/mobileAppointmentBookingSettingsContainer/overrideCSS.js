@@ -7,4 +7,7 @@ export default
 .slds-radio .slds-form-element__label {
     font-size: 16px;
     line-height: 22px;   
+}
+.slds-notify_toast, .slds-notify--toast{
+    min-width: 0;
 }`;

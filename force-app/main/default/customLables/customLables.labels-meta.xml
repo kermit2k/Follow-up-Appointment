@@ -276,7 +276,7 @@
         <protected>true</protected>
         <categories>AppointmentAssistant</categories>
         <shortDescription>Toast message reschedule appointment fails to get update</shortDescription>
-        <value>We couldn’t book the appointment. Try again later.</value>
+        <value>We couldn’t reschedule the appointment. Try again later.</value>
     </labels>
     <labels>
         <fullName>AppointmentAssistance_confirmation_failure_message</fullName>

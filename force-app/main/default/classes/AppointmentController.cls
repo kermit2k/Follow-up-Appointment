@@ -241,7 +241,7 @@ public without sharing class AppointmentController {
 
 
     @AuraEnabled()
-    public static Map<String, String> scheduleSA(String serviceAppointmentId, String schedulingPolicyId, String userId, String currentAssignmentMethod) {
+    public static Map<String,String> scheduleSA(String serviceAppointmentId, String schedulingPolicyId, String userId, String currentAssignmentMethod) {
         //  CALL to instrumentation api
         //  InstrumentationHelperController.initOperation(InstrumentationHelperController.FEATURE_NAME, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, InstrumentationHelperController.SUB_FEATURE_NAME_SSS, 'SSS - updateSASlot()');
         
@@ -258,14 +258,17 @@ public without sharing class AppointmentController {
                 FSL.ScheduleResult myResult = new FSL.ScheduleResult();
 
                 myResult = FSL.ScheduleService.schedule(schedulingPolicyId , serviceAppointmentId);
-                System.debug('FSL api result is : '+myResult);
-                updateStatusArray.put('success', 'Appointment Updated::: schedulingpolicy ' + schedulingPolicyId);
+                System.debug('FSL api result is : '+ myResult);
+                /*ServiceAppointment updatedSa = [SELECT Id, ArrivalWindowStartTime from ServiceAppointment WHERE Id =:serviceAppointmentId];
+
+                String updatedArrivalTime = '' + updatedSa.ArrivalWindowStartTime;*/
+
+                updateStatusArray.put('success',   '' + myResult);
                 
                 return updateStatusArray;
 
             } catch (Exception e) {
-                updateStatusArray.put('error', ''+e);
-                return updateStatusArray;
+               throw new AuraHandledException('Error in scheduleSA:::' + e.getMessage() + ' ' + e.getLineNumber());
             }
         
         
@@ -756,5 +759,36 @@ public without sharing class AppointmentController {
         detailArray.put('date2',date2.addMinutes(correction2 / (1000 * 60)));
         
         return detailArray;
+    }
+
+    @AuraEnabled
+    public static Map<String, String> getUpdatedSASchedulingInfo(String serviceAppointmentId) {
+
+        Map<String, String> serviceAppointmentInfo = new Map<String, String>();
+
+            try {
+                ServiceAppointment sa = [SELECT Id,
+                                            EarliestStartTime,
+                                            ArrivalWindowStartTime,
+                                            ArrivalWindowEndTime,
+                                            SchedStartTime,
+                                            SchedEndTime,
+                                            DueDate
+                                        FROM ServiceAppointment
+                                        WHERE ID =: serviceAppointmentId
+                                        ][0];
+                    
+                serviceAppointmentInfo.put('EarliestStartTime', ''+sa.EarliestStartTime);
+                serviceAppointmentInfo.put('ArrivalWindowStartTime', ''+sa.ArrivalWindowStartTime); 
+                serviceAppointmentInfo.put('ArrivalWindowEndTime', ''+sa.ArrivalWindowEndTime); 
+                serviceAppointmentInfo.put('SchedStartTime', ''+sa.SchedStartTime);
+                serviceAppointmentInfo.put('SchedEndTime', ''+sa.SchedEndTime);
+                serviceAppointmentInfo.put('DueDate', ''+sa.DueDate);
+
+            } catch (Exception e) {
+                serviceAppointmentInfo.put('error', ''+ e);
+            }
+            return serviceAppointmentInfo;
+        
     }
 }

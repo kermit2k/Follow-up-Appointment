@@ -11,17 +11,18 @@ import overrideCSS from './overrideCSS';
 
 export default class MobileAppointmentBookingSettingsContainer extends LightningElement {
     userId = Id;
+    enableAssignToMe = true;
+    enableAssignToEveryAvailable = true;
+    recommendedScore = 80;
+    useDefaultFields = true;
+    _serviceAppointmentId;
+
     @api operatingHoursId = "0OH8N0000005w1VWAQ";
     @api schedulingPolicyId ="a0Z8N00000029fZUAQ"; 
     @api arrivalWindowMethod = "Arrival Windows";
     @api schedulingHorizonUnit = "Months";
-    @api sechedulingHorizonValue = "3";
-    enableAssignTo;
-    @api enableAssignToMe;
-    @api enableAssignToEveryAvailable;
-    @api showExactArrivalTime =  false;
-    recommendedScore = 80;
-    useDefaultFields = true;
+    @api sechedulingHorizonValue = "3"; 
+    @api showExactArrivalTime =  false;   
     currentAppointmentDefaultFieldNames = [
         ID_FIELD,
         WORK_TYPE_FIELD,
@@ -29,9 +30,7 @@ export default class MobileAppointmentBookingSettingsContainer extends Lightning
         SCHED_START_FIELD,
         APPOINTMENT_NUMBER_FIELD,
         DURATION
-        ];
-
-    _serviceAppointmentId;
+        ]; 
 
     @api set recordId(recordId) {
         if (recordId !== this._serviceAppointmentId) {
@@ -45,9 +44,6 @@ export default class MobileAppointmentBookingSettingsContainer extends Lightning
 
     connectedCallback(){
         
-        this.enableAssignToMe = true;
-        this.enableAssignToEveryAvailable = true;
-
         const myStyle = document.createElement('style');
         myStyle.innerHTML = overrideCSS;
         document.head.appendChild(myStyle);

@@ -11,6 +11,7 @@ import cloneWorkOrder from '@salesforce/apex/AppointmentController.cloneWorkOrde
 import deleteClonedAppointmentData from '@salesforce/apex/AppointmentController.deleteClonedAppointmentData';
 import isUserExcludedResource from '@salesforce/apex/AppointmentController.isUserExcludedResource';
 import convertTimeToOtherTimeZone from '@salesforce/apex/AppointmentController.convertTimeToOtherTimeZone';
+import getUpdatedSASchedulingInfo from '@salesforce/apex/AppointmentController.getUpdatedSASchedulingInfo';
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c/utils';
@@ -224,7 +225,7 @@ export default class MobileAppointmentBookingLanding extends LightningElement {
                 }
                 else{
                     let firstDateOfWeek;
-                    this.currentAppointmentData = data;
+                    this.currentAppointmentData = JSON.parse(JSON.stringify(data));
                     //this.maxValidCalendarDate = calculateMaxValidHorizonDate(this.sechedulingHorizonValue, this.schedulingHorizonUnit, data['DueDate']);
                     this.error = undefined;
                     this.serviceTerritoryTimeZone = data.ServiceTerritoryTimeZone;
@@ -720,7 +721,6 @@ export default class MobileAppointmentBookingLanding extends LightningElement {
                                 //this.handleButtonClickEvent('rescheduleSAsuccess');
                                 this.executeRescheduleAppointmentQuery();   
                                 console.log("Appointment reschedule sucessfully");
-                                //window.location.reload();
                             }
 
                         }).catch(error => {
@@ -793,10 +793,18 @@ export default class MobileAppointmentBookingLanding extends LightningElement {
                 });
                 this.dispatchEvent(toastEvent);*/
                 this.isAppointmentConfirmed = true;
-                /*setTimeout(() => {
-                    //refresh
-                    eval("$A.get('e.force:refreshView').fire();");
-                }, 7000);*/
+                
+                //Get the updated Service Appointment Info
+                setTimeout(()=> {
+                    getUpdatedSASchedulingInfo({serviceAppointmentId: this.serviceAppointmentId})
+                    .then((e)=> {
+                        this.currentAppointmentData.ArrivalWindowStartTime = e.ArrivalWindowStartTime;
+                        this.currentAppointmentData.ArrivalWindowEndTime = e.ArrivalWindowEndTime;
+                    })
+                    .catch((e)=> {
+                        console.log("Error in getUpdatedSASchedulingInfo:::" + JSON.stringify(e));
+                    })
+                },700)
             } else if(data.urlExpired) {
                 console.log('invalidURL #9:');
                 this.show_InvalidURLpage();  
@@ -1237,7 +1245,6 @@ export default class MobileAppointmentBookingLanding extends LightningElement {
             }else{
                 this.isExcluded = false;
             }
-            
         }).catch((e)=>{
             this.isExcluded = false;
         }).finally(()=>{

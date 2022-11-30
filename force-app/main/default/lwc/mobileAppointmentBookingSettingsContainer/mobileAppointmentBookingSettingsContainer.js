@@ -17,8 +17,8 @@ export default class MobileAppointmentBookingSettingsContainer extends Lightning
     useDefaultFields = true;
     _serviceAppointmentId;
 
-    @api operatingHoursId = "0OH8N0000005w1VWAQ";
-    @api schedulingPolicyId ="a0Z8N00000029fZUAQ"; 
+    @api operatingHoursId = "0OH230000008kTJGAY";
+    @api schedulingPolicyId ="a0Z23000003zTbjEAE"; 
     @api arrivalWindowMethod = "Arrival Windows";
     @api schedulingHorizonUnit = "Months";
     @api sechedulingHorizonValue = "3"; 

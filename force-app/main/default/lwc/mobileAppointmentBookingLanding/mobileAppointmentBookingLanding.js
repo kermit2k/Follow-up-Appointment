@@ -14,7 +14,7 @@ import convertTimeToOtherTimeZone from '@salesforce/apex/AppointmentController.c
 import getUpdatedSASchedulingInfo from '@salesforce/apex/AppointmentController.getUpdatedSASchedulingInfo';
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
-import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c/utils';
+import {calculateMaxValidHorizonDate, formatAppointmentDateandHourRange} from 'c/mobileAppointmentBookingUtils';
 import UserPreferencesReceiveNotificationsAsDelegatedApprover from '@salesforce/schema/User.UserPreferencesReceiveNotificationsAsDelegatedApprover';
 
 //SA Field names

@@ -11,7 +11,7 @@ import convertTimeToOtherTimeZone from '@salesforce/apex/AppointmentController.c
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import customLabels from './labels';
 import { CloseActionScreenEvent } from 'lightning/actions';
-import {calculateMaxValidHorizonDate} from 'c/utils';
+import {calculateMaxValidHorizonDate} from 'c/mobileAppointmentBookingUtils';
 import getUserName from '@salesforce/apex/AppointmentController.getUserName';
 
 const assignmentMethod = {

@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import customLabels from './labels';
-import {formatAppointmentDateandHourRange, convertDateUTCtoLocal} from 'c/utils';
+import {formatAppointmentDateandHourRange, convertDateUTCtoLocal} from 'c/mobileAppointmentBookingUtils';
 
 export default class MobileAppointmentBookingCompactAppointmentInfo extends LightningElement {
     LABELS = customLabels;

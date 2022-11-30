@@ -721,6 +721,9 @@ export default class MobileAppointmentBookingLanding extends LightningElement {
                                 //this.handleButtonClickEvent('rescheduleSAsuccess');
                                 this.executeRescheduleAppointmentQuery();   
                                 console.log("Appointment reschedule sucessfully");
+
+                                // Update Data After successfull booking
+                                this.getInitData();
                             }
 
                         }).catch(error => {
@@ -794,17 +797,6 @@ export default class MobileAppointmentBookingLanding extends LightningElement {
                 this.dispatchEvent(toastEvent);*/
                 this.isAppointmentConfirmed = true;
                 
-                //Get the updated Service Appointment Info
-                setTimeout(()=> {
-                    getUpdatedSASchedulingInfo({serviceAppointmentId: this.serviceAppointmentId})
-                    .then((e)=> {
-                        this.currentAppointmentData.ArrivalWindowStartTime = e.ArrivalWindowStartTime;
-                        this.currentAppointmentData.ArrivalWindowEndTime = e.ArrivalWindowEndTime;
-                    })
-                    .catch((e)=> {
-                        console.log("Error in getUpdatedSASchedulingInfo:::" + JSON.stringify(e));
-                    })
-                },700)
             } else if(data.urlExpired) {
                 console.log('invalidURL #9:');
                 this.show_InvalidURLpage();  

@@ -4,7 +4,7 @@ public without sharing class AppointmentController {
 
     }
 
-    @AuraEnabled(Cacheable=true)
+    @AuraEnabled
     public static Map<String, String> getServiceAppointment(String serviceAppointmentId) {
 
         Map<String, String> serviceAppointmentInfo = new Map<String, String>();
@@ -259,9 +259,6 @@ public without sharing class AppointmentController {
 
                 myResult = FSL.ScheduleService.schedule(schedulingPolicyId , serviceAppointmentId);
                 System.debug('FSL api result is : '+ myResult);
-                /*ServiceAppointment updatedSa = [SELECT Id, ArrivalWindowStartTime from ServiceAppointment WHERE Id =:serviceAppointmentId];
-
-                String updatedArrivalTime = '' + updatedSa.ArrivalWindowStartTime;*/
 
                 updateStatusArray.put('success',   '' + myResult);
                 

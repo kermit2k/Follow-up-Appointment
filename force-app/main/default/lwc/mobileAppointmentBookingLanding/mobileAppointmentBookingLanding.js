@@ -221,35 +221,46 @@ export default class MobileAppointmentBookingLanding extends LightningElement {
             .then((data)=>{
                 console.log('init data ::: ' + JSON.stringify(data));
                 if(data.error){
+                    this.dataLoaded = false;
                     this.error = data.error;
                 }
                 else{
-                    let firstDateOfWeek;
-                    this.currentAppointmentData = JSON.parse(JSON.stringify(data));
-                    //this.maxValidCalendarDate = calculateMaxValidHorizonDate(this.sechedulingHorizonValue, this.schedulingHorizonUnit, data['DueDate']);
-                    this.error = undefined;
-                    this.serviceTerritoryTimeZone = data.ServiceTerritoryTimeZone;
-                    this.currentSAstatus = data.ServiceAppointmentStatus;
-                    if(data.ArrivalWindowEndTime && data.ArrivalWindowEndTime !== 'null') {
-                        this.OriginalArrivalEndDate = this.convertDateUTCtoLocal(data.ArrivalWindowEndTime);
-                    }
-                    if(data.ArrivalWindowStartTime && data.ArrivalWindowStartTime !== 'null') {
-                        this.OriginalArrivalStartDate = this.convertDateUTCtoLocal(data.ArrivalWindowStartTime);
-                    }
-                    this.OriginalEarliestStartDate = this.convertDateUTCtoLocal(data.EarliestStartTime);
 
-                    this.checkServiceAppointmentStatus(this.currentSAstatus);
-                    this.serviceAppointmentDueDate = this.convertDateUTCtoLocal(data.DueDate);
-                    this.maxValidCalendarDate = this.calculateMaxValidHorizonDate();
-                    if(data.EarliestStartTime) {
-                        this.minValidCalendarDate = this.convertDateUTCtoLocal(data.EarliestStartTime.toString());
-                    } else {
-                        this.minValidCalendarDate = this.getDateWithoutTime(new Date());
-                    }
-                   
-                    this.dataLoaded = true;
-                    }
+                    this.handleDataOnServiceAppointmentRecieved(data);
+                    
+                }
             })
+            .catch((e)=>{
+                this.dataLoaded = false;
+                console.log("Error in getInitData::: " + JSON.stringify(e));
+            })
+    }
+
+    handleDataOnServiceAppointmentRecieved(data){
+        let firstDateOfWeek;
+        this.currentAppointmentData = JSON.parse(JSON.stringify(data));
+        //this.maxValidCalendarDate = calculateMaxValidHorizonDate(this.sechedulingHorizonValue, this.schedulingHorizonUnit, data['DueDate']);
+        this.error = undefined;
+        this.serviceTerritoryTimeZone = data.ServiceTerritoryTimeZone;
+        this.currentSAstatus = data.ServiceAppointmentStatus;
+        if(data.ArrivalWindowEndTime && data.ArrivalWindowEndTime !== 'null') {
+            this.OriginalArrivalEndDate = this.convertDateUTCtoLocal(data.ArrivalWindowEndTime);
+        }
+        if(data.ArrivalWindowStartTime && data.ArrivalWindowStartTime !== 'null') {
+            this.OriginalArrivalStartDate = this.convertDateUTCtoLocal(data.ArrivalWindowStartTime);
+        }
+        this.OriginalEarliestStartDate = this.convertDateUTCtoLocal(data.EarliestStartTime);
+
+        this.checkServiceAppointmentStatus(this.currentSAstatus);
+        this.serviceAppointmentDueDate = this.convertDateUTCtoLocal(data.DueDate);
+        this.maxValidCalendarDate = this.calculateMaxValidHorizonDate();
+        if(data.EarliestStartTime) {
+            this.minValidCalendarDate = this.convertDateUTCtoLocal(data.EarliestStartTime.toString());
+        } else {
+            this.minValidCalendarDate = this.getDateWithoutTime(new Date());
+        }
+        
+        this.dataLoaded = true;
     }
 
     createSAObject(data){
